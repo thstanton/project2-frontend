@@ -16,7 +16,7 @@ const routes = [
     },
     {
         name: 'Single Gig',
-        path: '/gig',
+        path: '/gig/:id',
         component: GigView
     }
 ]

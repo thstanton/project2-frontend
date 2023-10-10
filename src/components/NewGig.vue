@@ -5,12 +5,15 @@
         <v-form>
 
             <!-- ? Date -->
-            <v-text-field label="Date" v-model="newGig.date">
+            <v-text-field label="Date" v-model="formatDate">
                 <v-menu 
                 activator="parent"
                 :close-on-content-click="false"
+                v-model="menus.datePicker"
                 ><v-date-picker 
                     v-model="newGig.date"
+                    @click:cancel="menus.datePicker = false"
+                    @click:save="menus.datePicker = false"
                 ></v-date-picker>
                 </v-menu>
             </v-text-field>
@@ -52,6 +55,7 @@
                             activator="parent" 
                             :close-on-content-click="false" 
                             location="end"
+                            v-model="menus.agency"
                             ><v-card min-width="300">
                                 <v-card-title>Add new agency</v-card-title>
                                 <v-list>
@@ -67,7 +71,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
+                                    <v-btn variant="text" @click="menus.agency = false"> Cancel </v-btn>
                                     <v-btn color="primary" variant="text" @click="addAgency">
                                         Save
                                     </v-btn>
@@ -105,14 +109,14 @@
                                     ></v-text-field>
                                     <v-text-field 
                                         label="Venue Postcode"
-                                        v-model="newVenue.postCode"
+                                        v-model="newVenue.postcode"
                                     ></v-text-field>
                                 </v-list>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
-                                    <v-btn color="primary" variant="text" @click="menu = false">
+                                    <v-btn variant="text" @click="menus.venue = false"> Cancel </v-btn>
+                                    <v-btn color="primary" variant="text" @click="addVenue">
                                         Save
                                     </v-btn>
                                 </v-card-actions>
@@ -150,7 +154,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
+                                    <v-btn variant="text" @click="menus.request = false"> Cancel </v-btn>
                                     <v-btn color="primary" variant="text" @click="createSet">
                                         Save
                                     </v-btn>
@@ -207,7 +211,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menu = false"> Cancel </v-btn>
+                                    <v-btn variant="text" @click="menus.request = false"> Cancel </v-btn>
                                     <v-btn color="primary" variant="text" @click="createRequest">
                                         Save
                                     </v-btn>
@@ -242,9 +246,13 @@
 </template>
 
 <script>
+// ? API Links
 const API_SAVEGIG_URL = 'http://localhost:4000/gigs/new'
 const API_SAVEAGENCY_URL = 'http://localhost:4000/agencies/new'
 const API_GETAGENCYNAMES_URL = 'http://localhost:4000/agencies/names'
+const API_SAVEVENUE_URL = 'http://localhost:4000/venues/new'
+const API_GETVENUENAMES_URL = 'http://localhost:4000/venues/names'
+
 
 export default {
     name: 'GigView',
@@ -276,6 +284,7 @@ export default {
             genres: [],
             requests: []
         },
+        formattedDate: null,
         newVenue: {},
         newAgency: {},
         newSet: {},
@@ -290,6 +299,13 @@ export default {
             display: false,
             timeout: 3000,
             color: 'primary'
+        },
+        menus: {
+            agency: false,
+            venue: false,
+            set: false,
+            request: false,
+            datePicker: false
         }
     }),
     async mounted() {
@@ -298,27 +314,34 @@ export default {
         let agencyData = await agencyResponse.json()
         this.allAgencies = agencyData
         // Fetch venues and populate allVenues list
-
+        const venueResponse = await fetch(API_GETVENUENAMES_URL)
+        let venueData = await venueResponse.json()
+        this.allVenues = venueData
+    },
+    computed: {
+        formatDate: function () {
+            const options = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            }
+            return (this.newGig.date) ? this.newGig.date.toLocaleString('en-GB', options) : null
+        }
     },
     methods: {
         createSet: function () {
             this.newGig.gigSets.push(this.newSet)
             this.newSet = {}
-            this.menu = false
-        },
-        deleteSet: function () {
-
+            this.menus.set = false
         },
         createRequest: function () {
             this.newGig.requests.push(this.newRequest)
             this.newRequest = {}
-        },
-        deleteRequest: function () {
-
+            this.menus.request = false
         },
         addAgency: async function () {
             try {
-                // Check not duplicate
                 // Post new agency to DB
                 const response = await fetch(API_SAVEAGENCY_URL, {
                     method: 'POST',
@@ -339,6 +362,8 @@ export default {
                         this.allAgencies = allAgenciesData
                         // Select new agency name as input
                         this.newGig.agencyName = this.newAgency.name
+                        // Close menu
+                        this.menus.agency = false
                     } else {
                         // Return confirmed message
                         this.alert.message = result.error
@@ -349,10 +374,36 @@ export default {
             }
         },
         addVenue: async function () {
-            // Post new agency to DB
-            
-            // Repopulate allAgencies
-            
+            try {
+                const response = await fetch(API_SAVEVENUE_URL, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.newVenue)
+                })
+                let result = await response.json()
+                // Check if successful
+                if (response.status === 201) {
+                        // Return confirmed message
+                        this.alert.message = "Venue Added Successfully"
+                        this.alert.display = true
+                        // Repopulate allAgencies
+                        const allVenues = await fetch(API_GETVENUENAMES_URL)
+                        let allVenuesData = await allVenues.json()
+                        this.allVenues = allVenuesData
+                        // Select new agency name as input
+                        this.newGig.venueName = this.newVenue.name
+                        // Close menu
+                        this.menus.venue = false
+                    } else {
+                        // Return confirmed message
+                        this.alert.message = result.error
+                        this.alert.display = true
+                    }
+            } catch (err) {
+                console.error(err)
+            }
         },
         addGig: async function () {
             try {
