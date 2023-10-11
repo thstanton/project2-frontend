@@ -14,7 +14,7 @@ export default {
     <v-list-item to="/agencies" prepend-icon="mdi-account-group" link title="Agencies"></v-list-item>
     <v-list-item to="/venues" prepend-icon="mdi-town-hall" link title="Venues"></v-list-item>
     <v-list-item to="/gigs/unconfirmed" prepend-icon="mdi-clock-alert-outline" link title="Unconfirmed Gigs"></v-list-item>
-    <v-list-item prepend-icon="mdi-magnify" link title="Search all"></v-list-item>
+    <v-list-item to="/gigs" prepend-icon="mdi-magnify" link title="Search all"></v-list-item>
     <template v-slot:append>
       <div class="pa-2">
         <v-btn block> Logout </v-btn>

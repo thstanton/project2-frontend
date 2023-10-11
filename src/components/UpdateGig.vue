@@ -1,14 +1,15 @@
 <script>
 // ? Imports
 import BreadCrumbs from './building-blocks/BreadCrumbs'
+import moment from 'moment'
 
 // ? API Links
-const API_SAVEGIG_URL = 'http://localhost:4000/gigs/new'
+const API_SINGLEGIG_URL = 'http://localhost:4000/gigs'
 const API_SAVEAGENCY_URL = 'http://localhost:4000/agencies/new'
 const API_GETAGENCYNAMES_URL = 'http://localhost:4000/agencies/names'
 const API_SAVEVENUE_URL = 'http://localhost:4000/venues/new'
 const API_GETVENUENAMES_URL = 'http://localhost:4000/venues/names'
-
+const API_UPDATEGIG_URL = 'http://localhost:4000/gigs/update'
 
 export default {
     name: 'GigView',
@@ -16,22 +17,7 @@ export default {
         BreadCrumbs
     },
     data: () => ({
-        newGig: {
-            date: null,
-            startTime: null,
-            endTime: null,
-            agencyName: null,
-            venueName: null,
-            gigType: null,
-            lineUp: null,
-            gigSets: [],
-            notes: null,
-            fee: null,
-            status: null,
-            genres: [],
-            requests: []
-        },
-        formattedDate: null,
+        gig: {},
         newVenue: {},
         newAgency: {},
         newSet: {},
@@ -53,37 +39,49 @@ export default {
             set: false,
             request: false,
             datePicker: false
-        }
+        },
+        dataLoaded: false,
     }),
     async mounted() {
-        // Fetch agencies and populate allAgencies list
-        const agencyResponse = await fetch(API_GETAGENCYNAMES_URL)
-        let agencyData = await agencyResponse.json()
-        this.allAgencies = agencyData
-        // Fetch venues and populate allVenues list
-        const venueResponse = await fetch(API_GETVENUENAMES_URL)
-        let venueData = await venueResponse.json()
-        this.allVenues = venueData
-    },
-    computed: {
-        formatDate: function () {
-            const options = {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
+        try {
+            // Fetch agencies and populate allAgencies list
+            const agencyResponse = await fetch(API_GETAGENCYNAMES_URL)
+            let agencyData = await agencyResponse.json()
+            this.allAgencies = agencyData
+            
+            // Fetch venues and populate allVenues list
+            const venueResponse = await fetch(API_GETVENUENAMES_URL)
+            let venueData = await venueResponse.json()
+            this.allVenues = venueData
+            
+            // Fetch gig
+            const gigResponse = await fetch(`${API_SINGLEGIG_URL}/${this.$route.params.id}`)
+            
+            if (!gigResponse.ok) {
+                throw new Error(`HTTP error! Status: ${gigResponse.status}`);
             }
-            return (this.newGig.date) ? this.newGig.date.toLocaleString('en-GB', options) : null
+
+            if (gigResponse) {
+                let gigData = await gigResponse.json()
+                this.gig = gigData
+
+                //Format Date
+                const gigDate = new Date(gigData.date)
+                this.gig.date = moment(gigDate).format('YYYY-MM-DD')
+                this.dataLoaded = true
+            }
+        } catch (err) {
+            console.error(err)
         }
     },
     methods: {
         createSet: function () {
-            this.newGig.gigSets.push(this.newSet)
+            this.gig.gigSets.push(this.newSet)
             this.newSet = {}
             this.menus.set = false
         },
         createRequest: function () {
-            this.newGig.requests.push(this.newRequest)
+            this.gig.requests.push(this.newRequest)
             this.newRequest = {}
             this.menus.request = false
         },
@@ -152,24 +150,24 @@ export default {
                 console.error(err)
             }
         },
-        addGig: async function () {
+        updateGig: async function () {
             try {
                 // Post new gig to DB
-                const response = await fetch(API_SAVEGIG_URL, {
-                    method: 'POST',
+                const response = await fetch(`${API_UPDATEGIG_URL}/${this.gig._id}`, {
+                    method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(this.newGig)
+                    body: JSON.stringify(this.gig)
                 })
                 console.log(response)
                 // Check if successful
                 if (response.status === 201) {
                     // Return confirmed message
-                    this.alert.message = "Gig Added Successfully"
+                    this.alert.message = "Gig Updated Successfully"
                     this.alert.display = true
                     // Redirect to single gig page
-                    setTimeout(() => this.$router.replace({ path: `/gig`}), 4000)
+                    setTimeout(() => this.$router.replace({ path: `/gigs/${this.gig._id}` }), 4000)
                 } else {
                     // Return confirmed message
                     this.alert.message = "There was a problem"
@@ -189,17 +187,11 @@ export default {
         <v-form>
 
             <!-- ? Date -->
-            <v-text-field label="Date" v-model="formatDate">
-                <v-menu 
-                activator="parent"
-                :close-on-content-click="false"
-                v-model="menus.datePicker"
-                ><v-date-picker 
-                    v-model="newGig.date"
-                    @click:cancel="menus.datePicker = false"
-                    @click:save="menus.datePicker = false"
-                ></v-date-picker>
-                </v-menu>
+            <v-text-field 
+                label="Date" 
+                type="date"
+                v-model="gig.date"
+                >
             </v-text-field>
             <v-row>
                 <v-col>
@@ -208,7 +200,7 @@ export default {
                     <v-text-field 
                         type="time" 
                         label="Start Time" 
-                        v-model="newGig.startTime"
+                        v-model="gig.startTime"
                     ></v-text-field>
                 </v-col>
                 <v-col>
@@ -217,7 +209,7 @@ export default {
                     <v-text-field 
                         type="time" 
                         label="End Time" 
-                        v-model="newGig.endTime"
+                        v-model="gig.endTime"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -228,7 +220,7 @@ export default {
                     <v-autocomplete 
                         label="Agency" 
                         :items="allAgencies"
-                        v-model="newGig.agencyName"
+                        v-model="gig.agencyName"
                     ></v-autocomplete>
                 </v-col>
                 <v-col>
@@ -272,19 +264,14 @@ export default {
                     <v-autocomplete 
                         label="Venue" 
                         :items="allVenues"
-                        v-model="newGig.venueName"
+                        v-model="gig.venueName"
                     ></v-autocomplete>
                 </v-col>
                 <v-col>
 
                     <!-- ? Add Venue Dialog -->
                     <v-btn>Add new venue
-                        <v-menu 
-                            activator="parent" 
-                            :close-on-content-click="false" 
-                            location="end"
-                            v-model="menus.venue"
-                            >
+                        <v-menu activator="parent" :close-on-content-click="false" location="end">
                             <v-card min-width="300">
                                 <v-card-title>Add new venue</v-card-title>
                                 <v-list>
@@ -318,12 +305,12 @@ export default {
                 <v-col>
 
                     <!-- ? Gig Type -->
-                    <v-autocomplete label="Type" :items="allGigTypes" v-model="newGig.gigType"></v-autocomplete>
+                    <v-autocomplete label="Type" :items="allGigTypes" v-model="gig.gigType"></v-autocomplete>
                 </v-col>
                 <v-col>
 
                     <!-- ? Line Up -->
-                    <v-combobox label="Line Up" :items="allLineUps" v-model="newGig.lineUp"></v-combobox>
+                    <v-combobox label="Line Up" :items="allLineUps" v-model="gig.lineUp"></v-combobox>
                 </v-col>
             </v-row>
             <v-row>
@@ -331,12 +318,7 @@ export default {
 
                     <!-- ? Sets -->
                     <v-btn>Add set
-                        <v-menu 
-                            activator="parent" 
-                            :close-on-content-click="false" 
-                            location="end"
-                            v-model="menus.set"
-                            >
+                        <v-menu activator="parent" :close-on-content-click="false" location="end">
                             <v-card min-width="300">
 
                                 <!-- ? New Set Dialog -->
@@ -348,7 +330,7 @@ export default {
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menus.set = false"> Cancel </v-btn>
+                                    <v-btn variant="text" @click="menus.request = false"> Cancel </v-btn>
                                     <v-btn color="primary" variant="text" @click="createSet">
                                         Save
                                     </v-btn>
@@ -360,12 +342,12 @@ export default {
                 <v-col>
 
                     <!-- ? Display created sets -->
-                    <v-list v-for="(set, i) in newGig.gigSets" v-bind:key="i">
+                    <v-list v-for="(set, i) in gig.gigSets" v-bind:key="i">
                         <v-card>
                             <v-card-title>{{ set.length }} minutes</v-card-title>
                             <v-card-subtitle>{{ set.desc }}</v-card-subtitle>
                             <v-card-actions>
-                                <v-btn @click="newGig.gigSets.splice(i, 1)">Remove</v-btn>
+                                <v-btn @click="gig.gigSets.splice(i, 1)">Remove</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-list>
@@ -373,32 +355,27 @@ export default {
             </v-row>
 
             <!-- ? Notes -->
-            <v-textarea label="Notes" v-model="newGig.notes"></v-textarea>
+            <v-textarea label="Notes" v-model="gig.notes"></v-textarea>
 
             <!-- ? Fee -->
-            <v-text-field label="Fee" v-model="newGig.fee" prefix="&pound;"></v-text-field>
+            <v-text-field label="Fee" v-model="gig.fee" prefix="&pound;"></v-text-field>
 
             <!-- ? Status -->
             <v-switch 
                 label="Confirmed"
                 true-value="confirmed"
                 false-value="unconfirmed"
-                v-model="newGig.status"
+                v-model="gig.status"
             ></v-switch>
 
             <!-- ? Genre -->
-            <v-combobox :items="allGenres" label="Genre(s)" v-model="newGig.genres" multiple></v-combobox>
+            <v-combobox :items="allGenres" label="Genre(s)" v-model="gig.genres" multiple></v-combobox>
             <v-row>
                 <v-col>
 
                     <!-- ? Requests -->
                     <v-btn>Add request
-                        <v-menu 
-                            activator="parent" 
-                            :close-on-content-click="false" 
-                            location="end"
-                            v-model="menus.request"
-                            >
+                        <v-menu activator="parent" :close-on-content-click="false" location="end">
                             <v-card min-width="300">
 
                                 <!-- ? Add request dialog -->
@@ -422,7 +399,7 @@ export default {
                 <v-col>
 
                     <!-- ? Display added requests -->
-                    <v-list v-for="(piece, i) in newGig.requests" v-bind:key="i">
+                    <v-list v-for="(piece, i) in gig.requests" v-bind:key="i">
                         <v-card prepend-icon="mdi-piano">
                             <template v-slot:title>{{ piece.name }} - {{ piece.desc }}</template>
                             <v-card-actions>
@@ -434,7 +411,7 @@ export default {
             </v-row>
 
             <!-- ? Submit -->
-            <v-btn block @click="addGig">Save Gig</v-btn>
+            <v-btn block @click="updateGig">Update Gig</v-btn>
         </v-form>
 
         <!-- ? Alerts -->

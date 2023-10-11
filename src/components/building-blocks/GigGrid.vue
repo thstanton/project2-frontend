@@ -22,6 +22,8 @@ export default {
                 response = await fetch(`${API_GIG_URL}/venue/${this.venueId}`)
             } else if (this.status) {
                 response = await fetch(`${API_GIG_URL}/status/${this.status}`)
+            } else {
+                response = await fetch(API_GIG_URL)
             }
 
             if (!response.ok) {
@@ -30,6 +32,7 @@ export default {
 
             if (response) {
                 let data = await response.json()
+                console.log(data)
                 this.gigs = data
                 this.dataLoaded = true
             }

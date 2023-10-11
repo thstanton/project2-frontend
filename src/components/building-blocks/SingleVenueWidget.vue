@@ -7,6 +7,9 @@
             <h4>{{ venue.name }}</h4>
             <p>{{ venue.address }}, {{ venue.postcode }}</p>
         </v-card-text>
+        <v-card-actions>
+            <v-btn :to="'/venues/' + venue._id">Details</v-btn>
+        </v-card-actions>
     </v-card>
 </template>
 

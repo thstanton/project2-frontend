@@ -16,6 +16,9 @@
                 </v-col>
             </v-row>
         </v-card-text>
+        <v-card-actions>
+            <v-btn :to="'/agencies/' + agency._id">Details</v-btn>
+        </v-card-actions>
     </v-card>
 </template>
 
