@@ -1,6 +1,190 @@
+<script>
+// ? Imports
+import BreadCrumbs from './building-blocks/BreadCrumbs'
+
+// ? API Links
+const API_SAVEGIG_URL = 'http://localhost:4000/gigs/new'
+const API_SAVEAGENCY_URL = 'http://localhost:4000/agencies/new'
+const API_GETAGENCYNAMES_URL = 'http://localhost:4000/agencies/names'
+const API_SAVEVENUE_URL = 'http://localhost:4000/venues/new'
+const API_GETVENUENAMES_URL = 'http://localhost:4000/venues/names'
+
+
+export default {
+    name: 'GigView',
+    components: {
+        BreadCrumbs
+    },
+    data: () => ({
+        newGig: {
+            date: null,
+            startTime: null,
+            endTime: null,
+            agencyName: null,
+            venueName: null,
+            gigType: null,
+            lineUp: null,
+            gigSets: [],
+            notes: null,
+            fee: null,
+            status: null,
+            genres: [],
+            requests: []
+        },
+        formattedDate: null,
+        newVenue: {},
+        newAgency: {},
+        newSet: {},
+        newRequest: {},
+        allAgencies: [],
+        allVenues: [],
+        allGenres: ['Jazz', 'Pop', 'Classical', 'Blues'],
+        allGigTypes: ['Wedding', 'Function', 'Residency'],
+        allLineUps: ['Solo', 'Duo', 'Trio', 'Quartet', 'Band'],
+        alert: {
+            message: '',
+            display: false,
+            timeout: 3000,
+            color: 'primary'
+        },
+        menus: {
+            agency: false,
+            venue: false,
+            set: false,
+            request: false,
+            datePicker: false
+        }
+    }),
+    async mounted() {
+        // Fetch agencies and populate allAgencies list
+        const agencyResponse = await fetch(API_GETAGENCYNAMES_URL)
+        let agencyData = await agencyResponse.json()
+        this.allAgencies = agencyData
+        // Fetch venues and populate allVenues list
+        const venueResponse = await fetch(API_GETVENUENAMES_URL)
+        let venueData = await venueResponse.json()
+        this.allVenues = venueData
+    },
+    computed: {
+        formatDate: function () {
+            const options = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            }
+            return (this.newGig.date) ? this.newGig.date.toLocaleString('en-GB', options) : null
+        }
+    },
+    methods: {
+        createSet: function () {
+            this.newGig.gigSets.push(this.newSet)
+            this.newSet = {}
+            this.menus.set = false
+        },
+        createRequest: function () {
+            this.newGig.requests.push(this.newRequest)
+            this.newRequest = {}
+            this.menus.request = false
+        },
+        addAgency: async function () {
+            try {
+                // Post new agency to DB
+                const response = await fetch(API_SAVEAGENCY_URL, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.newAgency)
+                })
+                let result = await response.json()
+                // Check if successful
+                if (response.status === 201) {
+                        // Return confirmed message
+                        this.alert.message = "Agency Added Successfully"
+                        this.alert.display = true
+                        // Repopulate allAgencies
+                        const allAgencies = await fetch(API_GETAGENCYNAMES_URL)
+                        let allAgenciesData = await allAgencies.json()
+                        this.allAgencies = allAgenciesData
+                        // Select new agency name as input
+                        this.newGig.agencyName = this.newAgency.name
+                        // Close menu
+                        this.menus.agency = false
+                    } else {
+                        // Return confirmed message
+                        this.alert.message = result.error
+                        this.alert.display = true
+                    }
+            } catch (err) {
+                console.error(err)
+            }
+        },
+        addVenue: async function () {
+            try {
+                const response = await fetch(API_SAVEVENUE_URL, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.newVenue)
+                })
+                let result = await response.json()
+                // Check if successful
+                if (response.status === 201) {
+                        // Return confirmed message
+                        this.alert.message = "Venue Added Successfully"
+                        this.alert.display = true
+                        // Repopulate allAgencies
+                        const allVenues = await fetch(API_GETVENUENAMES_URL)
+                        let allVenuesData = await allVenues.json()
+                        this.allVenues = allVenuesData
+                        // Select new agency name as input
+                        this.newGig.venueName = this.newVenue.name
+                        // Close menu
+                        this.menus.venue = false
+                    } else {
+                        // Return confirmed message
+                        this.alert.message = result.error
+                        this.alert.display = true
+                    }
+            } catch (err) {
+                console.error(err)
+            }
+        },
+        addGig: async function () {
+            try {
+                // Post new gig to DB
+                const response = await fetch(API_SAVEGIG_URL, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.newGig)
+                })
+                console.log(response)
+                // Check if successful
+                if (response.status === 201) {
+                    // Return confirmed message
+                    this.alert.message = "Gig Added Successfully"
+                    this.alert.display = true
+                    // Redirect to single gig page
+                    setTimeout(() => this.$router.replace({ path: `/gig`}), 4000)
+                } else {
+                    // Return confirmed message
+                    this.alert.message = "There was a problem"
+                    this.alert.display = true
+                }  
+            } catch (err) {
+                console.error(err)
+            }
+        }
+    }
+}
+</script>
+
 <template>
-    <!-- ? Breadcrumbs -->
-    <v-breadcrumbs :items="breadcrumbs" divider="/"></v-breadcrumbs>
+    <BreadCrumbs />
     <v-container>
         <v-form>
 
@@ -244,196 +428,3 @@
         >{{ alert.message }}</v-snackbar>
     </v-container>
 </template>
-
-<script>
-// ? API Links
-const API_SAVEGIG_URL = 'http://localhost:4000/gigs/new'
-const API_SAVEAGENCY_URL = 'http://localhost:4000/agencies/new'
-const API_GETAGENCYNAMES_URL = 'http://localhost:4000/agencies/names'
-const API_SAVEVENUE_URL = 'http://localhost:4000/venues/new'
-const API_GETVENUENAMES_URL = 'http://localhost:4000/venues/names'
-
-
-export default {
-    name: 'GigView',
-    data: () => ({
-        breadcrumbs: [
-            {
-                title: 'Dashboard',
-                disabled: false,
-                href: '/',
-            },
-            {
-                title: 'New Gig',
-                disabled: true,
-                href: 'breadcrumbs_link_1',
-            }
-        ],
-        newGig: {
-            date: null,
-            startTime: null,
-            endTime: null,
-            agencyName: null,
-            venueName: null,
-            gigType: null,
-            lineUp: null,
-            gigSets: [],
-            notes: null,
-            fee: null,
-            status: null,
-            genres: [],
-            requests: []
-        },
-        formattedDate: null,
-        newVenue: {},
-        newAgency: {},
-        newSet: {},
-        newRequest: {},
-        allAgencies: [],
-        allVenues: [],
-        allGenres: ['Jazz', 'Pop', 'Classical', 'Blues'],
-        allGigTypes: ['Wedding', 'Function', 'Residency'],
-        allLineUps: ['Solo', 'Duo', 'Trio', 'Quartet', 'Band'],
-        alert: {
-            message: '',
-            display: false,
-            timeout: 3000,
-            color: 'primary'
-        },
-        menus: {
-            agency: false,
-            venue: false,
-            set: false,
-            request: false,
-            datePicker: false
-        }
-    }),
-    async mounted() {
-        // Fetch agencies and populate allAgencies list
-        const agencyResponse = await fetch(API_GETAGENCYNAMES_URL)
-        let agencyData = await agencyResponse.json()
-        this.allAgencies = agencyData
-        // Fetch venues and populate allVenues list
-        const venueResponse = await fetch(API_GETVENUENAMES_URL)
-        let venueData = await venueResponse.json()
-        this.allVenues = venueData
-    },
-    computed: {
-        formatDate: function () {
-            const options = {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-            }
-            return (this.newGig.date) ? this.newGig.date.toLocaleString('en-GB', options) : null
-        }
-    },
-    methods: {
-        createSet: function () {
-            this.newGig.gigSets.push(this.newSet)
-            this.newSet = {}
-            this.menus.set = false
-        },
-        createRequest: function () {
-            this.newGig.requests.push(this.newRequest)
-            this.newRequest = {}
-            this.menus.request = false
-        },
-        addAgency: async function () {
-            try {
-                // Post new agency to DB
-                const response = await fetch(API_SAVEAGENCY_URL, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(this.newAgency)
-                })
-                let result = await response.json()
-                // Check if successful
-                if (response.status === 201) {
-                        // Return confirmed message
-                        this.alert.message = "Agency Added Successfully"
-                        this.alert.display = true
-                        // Repopulate allAgencies
-                        const allAgencies = await fetch(API_GETAGENCYNAMES_URL)
-                        let allAgenciesData = await allAgencies.json()
-                        this.allAgencies = allAgenciesData
-                        // Select new agency name as input
-                        this.newGig.agencyName = this.newAgency.name
-                        // Close menu
-                        this.menus.agency = false
-                    } else {
-                        // Return confirmed message
-                        this.alert.message = result.error
-                        this.alert.display = true
-                    }
-            } catch (err) {
-                console.error(err)
-            }
-        },
-        addVenue: async function () {
-            try {
-                const response = await fetch(API_SAVEVENUE_URL, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(this.newVenue)
-                })
-                let result = await response.json()
-                // Check if successful
-                if (response.status === 201) {
-                        // Return confirmed message
-                        this.alert.message = "Venue Added Successfully"
-                        this.alert.display = true
-                        // Repopulate allAgencies
-                        const allVenues = await fetch(API_GETVENUENAMES_URL)
-                        let allVenuesData = await allVenues.json()
-                        this.allVenues = allVenuesData
-                        // Select new agency name as input
-                        this.newGig.venueName = this.newVenue.name
-                        // Close menu
-                        this.menus.venue = false
-                    } else {
-                        // Return confirmed message
-                        this.alert.message = result.error
-                        this.alert.display = true
-                    }
-            } catch (err) {
-                console.error(err)
-            }
-        },
-        addGig: async function () {
-            try {
-                // Post new gig to DB
-                const response = await fetch(API_SAVEGIG_URL, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(this.newGig)
-                })
-                console.log(response)
-                // Check if successful
-                if (response.status === 201) {
-                    // Return confirmed message
-                    this.alert.message = "Gig Added Successfully"
-                    this.alert.display = true
-                    // Redirect to single gig page
-                    setTimeout(() => this.$router.replace({ path: '/gig'}), 4000)
-                } else {
-                    // Return confirmed message
-                    this.alert.message = "There was a problem"
-                    this.alert.display = true
-                }  
-            } catch (err) {
-                console.error(err)
-            }
-        }
-    }
-}
-</script>
-
-<style scoped></style>
