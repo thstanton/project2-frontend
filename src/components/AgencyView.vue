@@ -1,7 +1,7 @@
 <script>
-import BreadCrumbs from './building-blocks/BreadCrumbs'
-import GigGrid from './building-blocks/GigGrid'
-import EditMenu from './building-blocks/EditMenu'
+import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
+import GigGrid from './building-blocks/GigGrid.vue'
+import EditMenu from './building-blocks/EditMenu.vue'
 
 const API_AGENCIES_URL = "http://localhost:4000/agencies"
 const API_AGENCYSTATS_URL = "http://localhost:4000/gigs/stats/agencies"
@@ -60,7 +60,12 @@ export default {
         } catch (err) {
             console.error('Error:', err)
         }
-    }
+    },
+    methods: {
+        handleUpdate(agencyData) {
+        if (agencyData) this.agency = agencyData
+        }
+    } 
 }
 </script>
 
@@ -116,6 +121,7 @@ export default {
     <EditMenu
         v-if="statsDataLoaded"
         :agencyId="agency._id" 
-        :gigCount="(stats[0].gigCount) ? stats[0].gigCount : 0" 
+        :gigCount="stats[0].gigCount" 
+        @agencyUpdate="handleUpdate"
     />
 </template>

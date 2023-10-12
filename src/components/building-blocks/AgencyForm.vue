@@ -1,7 +1,5 @@
 <script>
-const API_SAVEAGENCY_URL = 'http://localhost:4000/agencies/new'
-const API_UPDATEAGENCY_URL = 'http://localhost:4000/agencies/update'
-const API_SINGLEAGENCY_URL = 'http://localhost:4000/agencies'
+const API_AGENCY_URL = 'http://localhost:4000/agencies'
 
 export default {
     name: 'AgencyForm',
@@ -13,7 +11,7 @@ export default {
     async mounted() {
         if (this.agencyId) {
             try {
-                const response = await fetch(`${API_SINGLEAGENCY_URL}/${this.agencyId}`)
+                const response = await fetch(`${API_AGENCY_URL}/${this.agencyId}`)
                 let data = await response.json()
                 this.agency = data
             } catch (err) {
@@ -25,7 +23,7 @@ export default {
         addAgency: async function () {
             try {
                 // Post new agency to DB
-                const response = await fetch(API_SAVEAGENCY_URL, {
+                const response = await fetch(`${API_AGENCY_URL}/new`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -35,9 +33,9 @@ export default {
 
                 // Check if successful
                 if (response.status === 201) {
-                        this.$emit('agencyAdd', 'The agency was added')
+                        this.$emit('agencyAdd', this.agency.name)
                     } else {
-                        this.$emit('agencyAdd', 'Error: Agency not added')
+                        this.$emit('agencyAdd', false)
                     }
             } catch (err) {
                 console.error(err)
@@ -46,7 +44,7 @@ export default {
         updateAgency: async function () {
             try {
                 // Post new agency to DB
-                const response = await fetch(`${API_UPDATEAGENCY_URL}/${this.agencyId}`, {
+                const response = await fetch(`${API_AGENCY_URL}/update/${this.agencyId}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -56,9 +54,9 @@ export default {
 
                 // Check if successful
                 if (response.status === 201) {
-                        this.$emit('agencyUpdate', 'The agency was updated')
+                        this.$emit('agencyUpdate', this.agency)
                     } else {
-                        this.$emit('agencyUpdate', 'Error: Agency not updated')
+                        this.$emit('agencyUpdate', false)
                     }
             } catch (err) {
                 console.error(err)
@@ -78,9 +76,15 @@ export default {
         </v-list>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn variant="text" @click="$emit('closeDialog')">Cancel</v-btn>
-            <v-btn v-if="agencyId" color="primary" variant="text" @click="updateAgency">Update</v-btn>
-            <v-btn v-else color="primary" variant="text" @click="addAgency">Save</v-btn>
+            <v-btn variant="text" @click="$emit('closeDialog')">
+                Cancel
+            </v-btn>
+            <v-btn v-if="agencyId" color="primary" variant="text" @click="updateAgency">
+                Update
+            </v-btn>
+            <v-btn v-else color="primary" variant="text" @click="addAgency">
+                Save
+            </v-btn>
         </v-card-actions>
     </v-card>
 </template>

@@ -1,43 +1,41 @@
 <script>
-import AgencyForm from './AgencyForm'
+import AgencyForm from './AgencyForm.vue'
+import VenueForm from './VenueForm.vue'
 
 const API_AGENCYDELETE_URL = "http://localhost:4000/agencies/delete"
+const API_VENUEDELETE_URL = "http://localhost:4000/venues/delete"
+const API_GIGDELETE_URL = "http://localhost:4000/gigs/delete"
 
 export default {
     name: 'EditMenu',
     props: ['gigId', 'agencyId', 'venueId', 'gigCount'],
+    emits: ['agencyUpdate', 'venueUpdate'],
     components: {
-        AgencyForm
-    },
+    AgencyForm,
+    VenueForm
+},
     data: () => ({
         deleteDialog: false,
         agencyEditDialog: false,
         venueEditDialog: false
     }),
     methods: {
-    //     async deleteGig() {
-    //         this.deleteDialog = false
-    //         try {
-    //             const response = await fetch(`${API_DELETE_URL}/${this.gig._id}`, {
-    //                 method: 'DELETE'
-    //             })
-    //             console.log(response)
-    //             // Check if successful
-    //             if (response.status === 200) {
-    //                 // Return confirmed message
-    //                 this.alert.message = "Gig deleted"
-    //                 this.alert.display = true
-    //                 // Redirect to single gig page
-    //                 setTimeout(() => this.$router.replace({ path: '/gigs/upcoming'}), 4000)
-    //             } else {
-    //                 // Return confirmed message
-    //                 this.alert.message = "There was a problem"
-    //                 this.alert.display = true
-    //             }
-    //         } catch (err) {
-    //             console.error(err)
-    //         }
-    //     },
+        async deleteGig() {
+            this.deleteDialog = false
+            try {
+                const response = await fetch(`${API_GIGDELETE_URL}/${this.gigId}`, {
+                    method: 'DELETE'
+                })
+                // Check if successful
+                if (response.status === 200) {
+                    setTimeout(() => this.$router.replace({ path: '/gigs'}), 4000)
+                } else {
+                    console.log(response)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        },
         async deleteAgency() {
             this.deleteDialog = false
             try {
@@ -54,29 +52,38 @@ export default {
                 console.error(err)
             }
         },
-    //     async deleteVenue() {
-    //         this.deleteDialog = false
-    //         try {
-    //             const response = await fetch(`${API_DELETE_URL}/${this.gig._id}`, {
-    //                 method: 'DELETE'
-    //             })
-    //             console.log(response)
-    //             // Check if successful
-    //             if (response.status === 200) {
-    //                 // Return confirmed message
-    //                 this.alert.message = "Gig deleted"
-    //                 this.alert.display = true
-    //                 // Redirect to single gig page
-    //                 setTimeout(() => this.$router.replace({ path: '/gigs/upcoming'}), 4000)
-    //             } else {
-    //                 // Return confirmed message
-    //                 this.alert.message = "There was a problem"
-    //                 this.alert.display = true
-    //             }
-    //         } catch (err) {
-    //             console.error(err)
-    //         }
-    //     }
+        async deleteVenue() {
+            this.deleteDialog = false
+            try {
+                const response = await fetch(`${API_VENUEDELETE_URL}/${this.venueId}`, {
+                    method: 'DELETE'
+                })
+                // Check if successful
+                if (response.status === 200) {
+                    setTimeout(() => this.$router.replace({ path: '/venues'}), 4000)
+                } else {
+                    console.log(response)
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        },
+        handleAgencyUpdate(agencyData) {
+            if (agencyData) { 
+                this.$emit('agencyUpdate', agencyData)
+            } else {
+                this.$emit('agencyUpdate', false)
+            }
+            this.agencyEditDialog = false
+        },
+        handleVenueUpdate(venueData) {
+            if (venueData) { 
+                this.$emit('venueUpdate', venueData)
+            } else {
+                this.$emit('venueUpdate', false)
+            }
+            this.venueEditDialog = false
+        }
     }
 }
 </script>
@@ -101,7 +108,7 @@ export default {
 
             <v-menu activator="#edit-menu">
                 <v-list v-if="gigId">
-                    <v-list-item :to="'/gigs/update/' + gig._id">Edit Gig</v-list-item>
+                    <v-list-item :to="'/gigs/update/' + gigId">Edit Gig</v-list-item>
                     <v-list-item @click="deleteDialog = true">Delete Gig</v-list-item>
                 </v-list>
 
@@ -118,11 +125,13 @@ export default {
         </div>
     </VLayoutItem>
 
-    <!-- ? Delete Dialog -->
+    <!-- ! Delete Dialog -->
     <v-dialog 
         v-model="deleteDialog"
         width="auto"
         >
+
+        <!-- ? Delete Gig -->
         <v-card v-if="gigId">
             <v-card-text>
                 Are you sure you want to delete this gig?
@@ -133,15 +142,17 @@ export default {
             </v-card-actions>
         </v-card>
 
-        <v-card v-if="agencyId && gigCount">
+        <!-- ? Guard against deletion of agencies or venues with gigs associated with them -->
+        <v-card v-if="agencyId && gigCount || venueId && gigCount">
             <v-card-text>
-                This agency has {{ gigCount }} gigs associated with it. Please remove them before deleting.
+                This item has {{ gigCount }} gigs associated with it. Please delete or reassign them before deleting.
             </v-card-text>
             <v-card-actions>
                 <v-btn color="primary" @click="deleteDialog = false">Cancel</v-btn>
             </v-card-actions>
         </v-card>
 
+        <!-- ? Delete Agency -->
         <v-card v-else-if="agencyId">
             <v-card-text>
                 Are you sure you want to delete this agency?
@@ -152,9 +163,8 @@ export default {
             </v-card-actions>
         </v-card>
 
-
-
-        <v-card v-if="venueId">
+        <!-- ? Delete Venue -->
+        <v-card v-else-if="venueId">
             <v-card-text>
                 Are you sure you want to delete this venue?
             </v-card-text>
@@ -165,6 +175,7 @@ export default {
         </v-card>
     </v-dialog>
 
+    <!-- ! Edit Dialog -->
     <!-- ? Agency Edit Dialog -->
     <v-dialog 
         v-model="agencyEditDialog"
@@ -173,6 +184,7 @@ export default {
         <AgencyForm 
             :agencyId="agencyId"
             @closeDialog="agencyEditDialog = false"
+            @agencyUpdate="handleAgencyUpdate"
             />
     </v-dialog>
 
@@ -181,30 +193,10 @@ export default {
         v-model="venueEditDialog"
         width="auto"
         >
-        <v-card min-width="300">
-            <v-card-title>Add new venue</v-card-title>
-            <v-list>
-                <v-text-field 
-                    label="Venue Name"
-                    v-model="newVenue.name"
-                ></v-text-field>
-                <v-text-field 
-                    label="Venue Address"
-                    v-model="newVenue.address"
-                ></v-text-field>
-                <v-text-field 
-                    label="Venue Postcode"
-                    v-model="newVenue.postcode"
-                ></v-text-field>
-            </v-list>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-
-                <v-btn variant="text" @click="menus.venue = false"> Cancel </v-btn>
-                <v-btn color="primary" variant="text" @click="addVenue">
-                    Save
-                </v-btn>
-            </v-card-actions>
-        </v-card>
+        <VenueForm
+            :venueId="venueId"
+            @closeDialog="venueEditDialog = false"
+            @venueUpdate="handleVenueUpdate"
+        />
     </v-dialog>
 </template>

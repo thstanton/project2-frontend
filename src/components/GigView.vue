@@ -2,16 +2,17 @@
 import SingleVenueWidget from '../components/building-blocks/SingleVenueWidget.vue'
 import SingleAgencyWidget from '../components/building-blocks/SingleAgencyWidget.vue'
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
+import EditMenu from './building-blocks/EditMenu.vue'
 
 const API_SINGLEGIG_URL = 'http://localhost:4000/gigs'
-const API_DELETE_URL = 'http://localhost:4000/gigs/delete'
 
 export default {
     name: 'GigView',
     components: {
         SingleVenueWidget, 
         SingleAgencyWidget,
-        BreadCrumbs
+        BreadCrumbs,
+        EditMenu
      },
     data: () => ({
         gig: {
@@ -69,29 +70,6 @@ export default {
                 return rawDate.toLocaleString('en-GB', options)
             }
             return ''
-        },
-        async deleteGig() {
-            this.deleteDialog = false
-            try {
-                const response = await fetch(`${API_DELETE_URL}/${this.gig._id}`, {
-                    method: 'DELETE'
-                })
-                console.log(response)
-                // Check if successful
-                if (response.status === 200) {
-                    // Return confirmed message
-                    this.alert.message = "Gig deleted"
-                    this.alert.display = true
-                    // Redirect to single gig page
-                    setTimeout(() => this.$router.replace({ path: '/gigs/upcoming'}), 4000)
-                } else {
-                    // Return confirmed message
-                    this.alert.message = "There was a problem"
-                    this.alert.display = true
-                }
-            } catch (err) {
-                console.error(err)
-            }
         }
     }
 }
@@ -215,34 +193,10 @@ export default {
     </v-container>
 
     <!-- ? Edit Menu -->
-    <VLayoutItem model-value position="bottom" class="text-end" size="88">
-        <div class="ma-4">
-            <v-btn size="x-large" icon="mdi-file-edit" color="primary" elevation="8" id="edit-menu"></v-btn>
-
-            <v-menu activator="#edit-menu">
-                <v-list>
-                    <v-list-item :to="'/gigs/update/' + gig._id">Edit Gig</v-list-item>
-                    <v-list-item @click="deleteDialog = true">Delete Gig</v-list-item>
-                </v-list>
-            </v-menu>
-        </div>
-    </VLayoutItem>
-
-    <!-- ? Delete Dialog -->
-    <v-dialog 
-        v-model="deleteDialog"
-        width="auto"
-        >
-        <v-card>
-            <v-card-text>
-                Are you sure you want to delete this gig?
-            </v-card-text>
-            <v-card-actions>
-                <v-btn color="primary" @click="deleteGig">Delete</v-btn>
-                <v-btn @click="deleteDialog = false">Cancel</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+    <EditMenu
+        v-if="dataLoaded"
+        :gigId="gig._id" 
+    />
 
     <!-- ? Alerts -->
     <v-snackbar 
