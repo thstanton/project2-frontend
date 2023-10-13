@@ -1,3 +1,11 @@
+<script>
+
+export default {
+    name: 'SingleAgencyWidget',
+    props: ['agency'],
+}
+</script>
+
 <template>
     <v-card width="100%">
         <v-card-item>
@@ -21,28 +29,3 @@
         </v-card-actions>
     </v-card>
 </template>
-
-<script>
-const API_SINGLEAGENCY_URL = 'http://localhost:4000/agencies'
-
-export default {
-    name: 'SingleAgencyWidget',
-    props: ['id'],
-    data: () => ({
-        agency: {
-            name: null,
-            email: null,
-            initials: null
-        }
-    }),
-    async mounted() {
-        try {
-            const response = await fetch(`${API_SINGLEAGENCY_URL}/${this.id}`)
-            let data = await response.json()
-            this.agency = data
-        } catch (err) {
-            console.error(err)
-        }
-    }
-}
-</script>

@@ -80,25 +80,23 @@ export default {
         updateGig: async function () {
             try {
                 // Post new gig to DB
-                const response = await fetch(`${API_GIGS_URL}/${this.gig._id}`, {
+                const response = await fetch(`${API_GIGS_URL}/update/${this.gig._id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(this.gig)
                 })
-                console.log(response)
+                
                 // Check if successful
                 if (response.status === 201) {
                     // Return confirmed message
-                    this.alert.message = "Gig Updated Successfully"
-                    this.alert.display = true
+
                     // Redirect to single gig page
                     setTimeout(() => this.$router.replace({ path: `/gigs/${this.gig._id}` }), 4000)
                 } else {
                     // Return confirmed message
-                    this.alert.message = "There was a problem"
-                    this.alert.display = true
+                    console.log(response)
                 }  
             } catch (err) {
                 console.error(err)
@@ -329,7 +327,7 @@ export default {
 
             <!-- ? Submit -->
             <v-btn v-if="gigId" block @click="updateGig">Update Gig</v-btn>
-            <v-btn v-else block @click="updateGig">Add Gig</v-btn>
+            <v-btn v-else block @click="addGig">Add Gig</v-btn>
         </v-form>
     </v-container>
 </template>

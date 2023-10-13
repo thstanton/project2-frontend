@@ -1,3 +1,10 @@
+<script>
+export default {
+    name: 'SingleVenueWidget',
+    props: ['venue'],
+}
+</script>
+
 <template>
     <v-card width="100%">
         <v-card-item>
@@ -12,28 +19,3 @@
         </v-card-actions>
     </v-card>
 </template>
-
-<script>
-const API_SINGLEVENUE_URL = 'http://localhost:4000/venues'
-
-export default {
-    name: 'SingleVenueWidget',
-    props: ['id'],
-    data: () => ({
-        venue: {
-            name: null,
-            address: null,
-            postcode: null
-        }
-    }),
-    async mounted() {
-        try {
-            const response = await fetch(`${API_SINGLEVENUE_URL}/${this.id}`)
-            let data = await response.json()
-            this.venue = data
-        } catch (err) {
-            console.error(err)
-        }
-    }
-}
-</script>

@@ -1,11 +1,8 @@
 <script>
-const API_GIG_URL = 'http://localhost:4000/gigs'
-
 export default {
     name: 'GigGrid',
-    props: ['agencyId', 'venueId', 'status'],
+    props: ['gigs'],
     data: () => ({
-        gigs: [],
         dataLoaded: false,
         icons: {
             wedding: "mdi-ring",
@@ -13,47 +10,10 @@ export default {
             function: "mdi-office-building"
         }
     }),
-    async mounted() {
-        try {
-            let response = null
-            if (this.agencyId) {
-                response = await fetch(`${API_GIG_URL}/agency/${this.agencyId}`)
-            } else if (this.venueId) {
-                response = await fetch(`${API_GIG_URL}/venue/${this.venueId}`)
-            } else if (this.status) {
-                response = await fetch(`${API_GIG_URL}/status/${this.status}`)
-            } else {
-                response = await fetch(API_GIG_URL)
-            }
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            if (response) {
-                let data = await response.json()
-                console.log(data)
-                this.gigs = data
-                this.dataLoaded = true
-            }
-        } catch (err) {
-            console.error('Error:', err)
-        }
+    mounted() {
+       
     },
     methods: {
-        formatDate(date) {
-            if (this.dataLoaded) {
-                const rawDate = new Date(date)
-                const options = {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                }
-                return rawDate.toLocaleString('en-GB', options)
-            }
-            return ''
-        },
         renderIcon(gigType) {
             if (gigType === 'Wedding') return this.icons.wedding
             if (gigType === 'Function') return this.icons.function
@@ -70,7 +30,7 @@ export default {
                 <v-card
                     :prepend-icon="renderIcon(gig.gigType)"
                 >
-                    <v-card-title>{{ formatDate(gig.date) }}</v-card-title>
+                    <v-card-title>{{ gig.date }}</v-card-title>
                     <v-card-subtitle>{{ gig.startTime }}-{{ gig.endTime }}</v-card-subtitle>
                     <v-card-actions>
                         <v-btn :to="'/gigs/' + gig._id">Details</v-btn>

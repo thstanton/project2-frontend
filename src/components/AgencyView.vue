@@ -2,9 +2,9 @@
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import EditMenu from './building-blocks/EditMenu.vue'
+import moment from 'moment'
 
 const API_AGENCIES_URL = "http://localhost:4000/agencies"
-const API_AGENCYSTATS_URL = "http://localhost:4000/gigs/stats/agencies"
 
 export default {
     name: 'AgencyView',
@@ -15,16 +15,9 @@ export default {
     },
     data: () => ({
         agency: {},
+        gigs: [],
         stats: [],
-        agencyDataLoaded: false,
-        statsDataLoaded: false,
-        alert: {
-            message: '',
-            display: false,
-            timeout: 3000,
-            color: 'primary'
-        },
-        gigCount: null
+        dataLoaded: false,
     }),
     async mounted() {
         try {
@@ -35,26 +28,21 @@ export default {
             }
 
             if (agencyResponse) {
-                let agencyData = await agencyResponse.json()
-                this.agency = agencyData
-                this.agencyDataLoaded = true
-                
-                const statsResponse = await fetch(`${API_AGENCYSTATS_URL}/${this.agency._id}`)
-                if (!statsResponse.ok) {
-                    throw new Error(`HTTP error! Status: ${statsResponse.status}`);
-                }
+                let data = await agencyResponse.json()
+                console.log(data)
+                this.agency = data.agency
+                this.stats = data.stats
+                this.gigs = data.gigs
+                this.dataLoaded = true
 
-                if (statsResponse) {
-                    let statsData = await statsResponse.json()
-                    if (statsData.length === 0) {
-                        statsData.push({ 
-                            gigCount: 0,
-                            totalEarnings: 0
-                        })
-                    } 
-                    this.stats = statsData
-                    this.statsDataLoaded = true
-                }
+                // Format Date
+                this.gigs.forEach(gig => {
+                    console.log(gig.date)
+                    const formattedDate = new Date(gig.date)
+                    console.log(formattedDate)
+                    gig.date = moment(formattedDate).format('D MMM YY')
+                    console.log(gig.date)
+                })
             }
 
         } catch (err) {
@@ -90,7 +78,7 @@ export default {
                 <v-row>
                     <v-col>
                         <v-card>
-                            <v-card-text v-if="statsDataLoaded">
+                            <v-card-text v-if="dataLoaded">
                                 <p>Gigs with this agency:</p>
                                 <p>{{ stats[0].gigCount }}</p>
                             </v-card-text>
@@ -100,7 +88,7 @@ export default {
                 <v-row>
                     <v-col>
                         <v-card>
-                            <v-card-text v-if="statsDataLoaded">
+                            <v-card-text v-if="dataLoaded">
                                 <p>Earnings through this agency to date:</p>
                                 <p>&pound;{{ stats[0].totalEarnings }}</p>
                             </v-card-text>
@@ -113,15 +101,15 @@ export default {
 
     <!-- ? Gigs -->
     <GigGrid 
-        v-if="agencyDataLoaded" 
-        :agencyId="agency._id" 
+        v-if="dataLoaded" 
+        :gigs="gigs" 
     />
 
     <!-- ? Edit Menu -->
     <EditMenu
-        v-if="statsDataLoaded"
+        v-if="dataLoaded"
         :agencyId="agency._id" 
-        :gigCount="stats[0].gigCount" 
+        :gigCount="gigs.length" 
         @agencyUpdate="handleUpdate"
     />
 </template>

@@ -1,6 +1,7 @@
 <script>
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
-import GigGrid from './building-blocks/GigGrid'
+import GigGrid from './building-blocks/GigGrid.vue'
+import moment from 'moment'
 
 const API_URL = 'http://localhost:4000/gigs'
 
@@ -10,12 +11,29 @@ export default {
         BreadCrumbs, GigGrid
     },
     data: () => ({
-        gigs: []
+        gigs: [],
+        dataReady: false
     }),
     async mounted() {
-        const response = await fetch(API_URL)
-        let data = await response.json()
-        this.gigs = data
+        try {
+            const response = await fetch(API_URL)
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
+            
+            if (response) {
+                let data = await response.json()
+                this.gigs = data
+                this.dataReady = true
+                // Format Date
+                this.gigs.forEach(gig => {
+                    const formattedDate = new Date(gig.date)
+                    gig.date = moment(formattedDate).format('D MMM YY')
+                })
+            }
+        
+        } catch (err) {
+            console.error(err)
+        } 
     },
     methods: {}
 }
@@ -25,6 +43,6 @@ export default {
     <BreadCrumbs />
     <v-container>
         <h1 class="text-h4">Upcoming Gigs</h1>
-        <GigGrid />
+        <GigGrid v-if="dataReady" :gigs="gigs" />
     </v-container>
 </template>

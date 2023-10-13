@@ -3,6 +3,7 @@ import SingleVenueWidget from '../components/building-blocks/SingleVenueWidget.v
 import SingleAgencyWidget from '../components/building-blocks/SingleAgencyWidget.vue'
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import EditMenu from './building-blocks/EditMenu.vue'
+import moment from 'moment'
 
 const API_SINGLEGIG_URL = 'http://localhost:4000/gigs'
 
@@ -50,27 +51,21 @@ export default {
 
             if (response) {
                 let data = await response.json()
-                this.gig = data
+                this.gig = data.gig
+                this.agency = data.agency
+                this.venue = data.venue
                 this.dataLoaded = true
+
+                // Format Date
+                const formattedDate = new Date(this.gig.date)
+                this.gig.date = moment(formattedDate).format('D MMM YY')
             }
         } catch (err) {
             console.error('Error:', err)
         }
     },
     methods: {
-        formatDate(date) {
-            if (this.dataLoaded) {
-                const rawDate = new Date(date)
-                const options = {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric"
-                }
-                return rawDate.toLocaleString('en-GB', options)
-            }
-            return ''
-        }
+        
     }
 }
 </script>
@@ -87,7 +82,7 @@ export default {
                     <v-row>
                         
                         <v-col class="v-col-10">
-                            <v-card-title>{{ formatDate(gig.date) }}</v-card-title>
+                            <v-card-title>{{ gig.date }}</v-card-title>
                             <v-card-subtitle>{{ gig.startTime }}-{{ gig.endTime }}</v-card-subtitle>
                             <v-card-text>{{ gig.gigType }}</v-card-text>
                         </v-col>
@@ -147,7 +142,7 @@ export default {
                 <!-- ? Venue -->
                 <v-row v-if="dataLoaded">
                     <v-col>
-                        <SingleVenueWidget :id="gig.venueId" />
+                        <SingleVenueWidget :venue="venue" />
                     </v-col>
                 </v-row>
                 
@@ -155,7 +150,7 @@ export default {
                 <v-row v-if="dataLoaded">
                     <v-col>
 
-                        <SingleAgencyWidget :id="gig.agencyId" />
+                        <SingleAgencyWidget :agency="agency" />
 
                     </v-col>
                 </v-row>

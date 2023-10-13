@@ -3,6 +3,10 @@ import App from './App.vue'
 import router from './router'
 import './assets/css/globalStyles.css'
 
+//Auth
+import vue3GoogleLogin from 'vue3-google-login'
+import Vue3Cookies from "vue3-cookies"
+
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
@@ -25,4 +29,14 @@ const vuetify = createVuetify({
 const app = createApp(App)
 app.use(router)
 app.use(vuetify)
+app.use(vue3GoogleLogin, {clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID})
+app.use(Vue3Cookies, {
+    expireTimes: "1d", // How long the cookie will remain in our system
+    path: '/', // Where the cookie will be saved (root)
+    domain: '',
+    secure: true, // Encrypted by default
+    sameSite: 'None'
+})
 app.mount('#app')
+
+export { app }

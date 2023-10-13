@@ -14,12 +14,14 @@
         },
         data: () => ({
             venue: {},
+            gigs: [],
             dataLoaded: false,
         }),
         async mounted() {
             const response = await fetch(`${API_VENUES_URL}/${this.$route.params.id}`)
             let data = await response.json()
-            this.venue = data
+            this.venue = data.venue
+            this.gigs = data.gigs
             this.dataLoaded = true
         },
         methods: {
@@ -42,12 +44,16 @@
     </v-container>
     
     <!-- ? Gig Grid -->
-    <GigGrid v-if="dataLoaded === true" :venueId="venue._id" />
+    <GigGrid 
+        v-if="dataLoaded" 
+        :gigs="gigs" 
+    />
     
     <!-- ? Edit Menu -->
     <EditMenu
         v-if="dataLoaded"
         :venueId="venue._id"
+        :gigCount="gigs.length"
         @venueUpdate="handleUpdate"
     />
 </template>
