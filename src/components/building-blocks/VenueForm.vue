@@ -15,7 +15,7 @@ export default {
             try {
                 const response = await fetch(`${API_SINGLEVENUE_URL}/${this.venueId}`)
                 let data = await response.json()
-                this.venue = data
+                this.venue = data.venue
             } catch (err) {
                 console.error(err)
             }

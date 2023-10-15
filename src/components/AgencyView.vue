@@ -2,7 +2,7 @@
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import EditMenu from './building-blocks/EditMenu.vue'
-import moment from 'moment'
+import { formatDate } from '@/methods/formatDate'
 
 const API_AGENCIES_URL = "http://localhost:4000/agencies"
 
@@ -36,13 +36,7 @@ export default {
                 this.dataLoaded = true
 
                 // Format Date
-                this.gigs.forEach(gig => {
-                    console.log(gig.date)
-                    const formattedDate = new Date(gig.date)
-                    console.log(formattedDate)
-                    gig.date = moment(formattedDate).format('D MMM YY')
-                    console.log(gig.date)
-                })
+                formatDate(this.gigs)
             }
 
         } catch (err) {
@@ -97,13 +91,12 @@ export default {
                 </v-row>
             </v-col>
         </v-row>
-    </v-container>
-
-    <!-- ? Gigs -->
+        <!-- ? Gigs -->
     <GigGrid 
         v-if="dataLoaded" 
         :gigs="gigs" 
     />
+    </v-container>
 
     <!-- ? Edit Menu -->
     <EditMenu

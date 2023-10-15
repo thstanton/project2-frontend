@@ -1,53 +1,81 @@
 <script>
-    import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
-    import GigGrid from './building-blocks/GigGrid.vue'
-    import EditMenu from './building-blocks/EditMenu.vue'
+import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
+import GigGrid from './building-blocks/GigGrid.vue'
+import EditMenu from './building-blocks/EditMenu.vue'
+import { formatDate } from '@/methods/formatDate'
+import VenueGoogleMap from './building-blocks/VenueGoogleMap.vue'
 
-    const API_VENUES_URL = "http://localhost:4000/venues"
-    
-    export default {
-        name: 'VenueView',
-        components: {
-            BreadCrumbs, 
-            GigGrid,
-            EditMenu
-        },
-        data: () => ({
-            venue: {},
-            gigs: [],
-            dataLoaded: false,
-        }),
-        async mounted() {
-            const response = await fetch(`${API_VENUES_URL}/${this.$route.params.id}`)
+const API_VENUES_URL = "http://localhost:4000/venues"
+
+export default {
+    name: 'VenueView',
+    components: {
+        BreadCrumbs,
+        GigGrid,
+        EditMenu,
+        VenueGoogleMap
+    },
+    data: () => ({
+        venue: {},
+        gigs: [],
+        locationData: {},
+        dataLoaded: false,
+    }),
+    async mounted() {
+        try {
+        const response = await fetch(`${API_VENUES_URL}/${this.$route.params.id}`)
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        if (response) {
             let data = await response.json()
+            console.log(data)
             this.venue = data.venue
             this.gigs = data.gigs
+            this.locationData = data.locationData
             this.dataLoaded = true
-        },
-        methods: {
-            handleUpdate: function (venueData) {
-                if (venueData) this.venue = venueData
-            }
+
+            // Format Date
+            formatDate(this.gigs)
+        }
+
+    } catch (err) {
+        console.error('Error:', err)
+    }
+    },
+    methods: {
+        handleUpdate: function (venueData) {
+            if (venueData) this.venue = venueData
         }
     }
+}
 </script>
 
 <template>
     <BreadCrumbs />
     <v-container>
-        <v-card>
-            <v-card-title>{{ venue.name }}</v-card-title>
-            <v-card-text>
-                {{ venue.address }}, {{ venue.postcode }}
-            </v-card-text>
-        </v-card>
+        <v-row>
+            <v-col>
+                <v-card>
+                    <v-card-title>{{ venue.name }}</v-card-title>
+                    <v-card-text>
+                        {{ venue.address }}, {{ venue.postcode }}
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col>
+                <VenueGoogleMap :center="locationData" />
+            </v-col>
+        </v-row>
+        
+        <!-- ? Gig Grid -->
+        <GigGrid 
+            v-if="dataLoaded" 
+            :gigs="gigs" 
+        />
     </v-container>
-    
-    <!-- ? Gig Grid -->
-    <GigGrid 
-        v-if="dataLoaded" 
-        :gigs="gigs" 
-    />
     
     <!-- ? Edit Menu -->
     <EditMenu

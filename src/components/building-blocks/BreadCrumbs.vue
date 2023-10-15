@@ -9,12 +9,15 @@ export default {
                 href: '/',
             },
             {
-                title: 'New Gig',
+                title: '',
                 disabled: true,
                 href: 'breadcrumbs_link_1',
             }
         ],
-    })
+    }),
+    mounted() {
+        this.items[1].title = this.$route.name
+    }
 }
 </script>
 <template>

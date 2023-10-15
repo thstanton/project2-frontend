@@ -1,7 +1,7 @@
 <script>
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
-import moment from 'moment'
+import { formatDate } from '@/methods/formatDate'
 
 const API_URL = 'http://localhost:4000/gigs'
 
@@ -24,11 +24,7 @@ export default {
                 let data = await response.json()
                 this.gigs = data
                 this.dataReady = true
-                // Format Date
-                this.gigs.forEach(gig => {
-                    const formattedDate = new Date(gig.date)
-                    gig.date = moment(formattedDate).format('D MMM YY')
-                })
+                formatDate(this.gigs)
             }
         
         } catch (err) {

@@ -245,8 +245,8 @@ export default {
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menus.request = false"> Cancel </v-btn>
-                                    <v-btn color="primary" variant="text" @click="createSet">
+                                    <v-btn @click="menus.request = false"> Cancel </v-btn>
+                                    <v-btn @click="createSet">
                                         Save
                                     </v-btn>
                                 </v-card-actions>
@@ -276,12 +276,10 @@ export default {
             <v-text-field label="Fee" v-model="gig.fee" prefix="&pound;"></v-text-field>
 
             <!-- ? Status -->
-            <v-switch 
-                label="Confirmed"
-                true-value="confirmed"
-                false-value="unconfirmed"
-                v-model="gig.status"
-            ></v-switch>
+            <v-radio-group v-model="gig.status">
+                <v-radio label="Unconfirmed" value="unconfirmed"></v-radio>
+                <v-radio label="Confirmed" value="confirmed"></v-radio>
+            </v-radio-group>
 
             <!-- ? Genre -->
             <v-combobox :items="allGenres" label="Genre(s)" v-model="gig.genres" multiple></v-combobox>
@@ -302,8 +300,8 @@ export default {
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
 
-                                    <v-btn variant="text" @click="menus.request = false"> Cancel </v-btn>
-                                    <v-btn color="primary" variant="text" @click="createRequest">
+                                    <v-btn @click="menus.request = false"> Cancel </v-btn>
+                                    <v-btn color="primary" @click="createRequest">
                                         Save
                                     </v-btn>
                                 </v-card-actions>

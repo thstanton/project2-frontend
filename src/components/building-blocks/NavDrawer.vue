@@ -38,11 +38,13 @@ export default {
                     lastLogin: new Date()
                 })
             })
+            this.$router.replace({ name: 'Dashboard' })
         },
         handleLogOut: function () {
             googleLogout()
             this.$cookies.remove('user_session')
             this.isLoggedIn = false
+            this.$router.replace({ name: 'Landing Page' })
         }
     }
 }
@@ -50,7 +52,7 @@ export default {
 
 <template>
     <v-navigation-drawer class="bg-indigo-darken-2" theme="light" permanent>
-    <v-list-item title="Gig Manager"></v-list-item>
+    <v-list-item id="title">Gig Manager</v-list-item>
     <v-divider></v-divider>
     <v-list-item v-if="isLoggedIn" :prepend-avatar="userAvatar">{{ userFName }} {{ userSName }}</v-list-item>
     <v-divider></v-divider>
@@ -66,10 +68,22 @@ export default {
         <v-btn block @click="handleLogOut"> Logout </v-btn>
       </div>
       <div v-else class="pa-2">
-        <!-- <v-btn block prepend-icon="mdi-google"> -->
-          <GoogleLogin :callback="callback" />
-        <!-- </v-btn> -->
+          <GoogleLogin id="login-button" :callback="callback" />
       </div>
     </template>
   </v-navigation-drawer>
 </template>
+
+<style scoped>
+
+#title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 2.2vmin;
+  font-weight: 600;
+}
+
+#login-button {
+  margin: 0 auto;
+}
+
+</style>

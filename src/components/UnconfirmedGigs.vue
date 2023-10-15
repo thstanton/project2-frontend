@@ -1,6 +1,7 @@
 <script>
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
+import { formatDate } from '@/methods/formatDate'
 
 const API_URL = 'http://localhost:4000/gigs'
 
@@ -10,14 +11,26 @@ export default {
         BreadCrumbs, GigGrid
     },
     data: () => ({
-        gigs: []
+        gigs: [],
+        dataReady: false
     }),
     async mounted() {
-        const response = await fetch(API_URL)
-        let data = await response.json()
-        this.gigs = data
-    },
-    methods: {}
+        try {
+            const response = await fetch(`${API_URL}/status/unconfirmed`)
+
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
+            
+            if (response) {
+                let data = await response.json()
+                this.gigs = data
+                this.dataReady = true
+                formatDate(this.gigs)
+            }
+        
+        } catch (err) {
+            console.error(err)
+        }
+    }
 }
 </script>
 
@@ -25,6 +38,6 @@ export default {
     <BreadCrumbs />
     <v-container>
         <h1 class="text-h4">Unconfirmed Gigs</h1>
-        <GigGrid status="unconfirmed" />
+        <GigGrid :gigs="gigs" />
     </v-container>
 </template>

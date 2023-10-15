@@ -3,6 +3,7 @@ import SingleVenueWidget from '../components/building-blocks/SingleVenueWidget.v
 import SingleAgencyWidget from '../components/building-blocks/SingleAgencyWidget.vue'
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import EditMenu from './building-blocks/EditMenu.vue'
+import { renderIcon } from '@/methods/renderIcon'
 import moment from 'moment'
 
 const API_SINGLEGIG_URL = 'http://localhost:4000/gigs'
@@ -57,15 +58,14 @@ export default {
                 this.dataLoaded = true
 
                 // Format Date
-                const formattedDate = new Date(this.gig.date)
-                this.gig.date = moment(formattedDate).format('D MMM YY')
+                this.gig.date = moment(this.gig.date).format('Do MMMM YYYY')
             }
         } catch (err) {
             console.error('Error:', err)
         }
     },
     methods: {
-        
+        renderIcon
     }
 }
 </script>
@@ -87,10 +87,8 @@ export default {
                             <v-card-text>{{ gig.gigType }}</v-card-text>
                         </v-col>
 
-                        <v-col class="v-col-2">
-                            <v-avatar>
-                                <v-icon icon="mdi-city" />
-                            </v-avatar>
+                        <v-col class="v-col-2" id="icon">
+                            <v-icon :icon="renderIcon(gig.gigType)" size="8vmin" />
                         </v-col>
                         
                     </v-row>
@@ -200,3 +198,11 @@ export default {
             :color="alert.color"
         >{{ alert.message }}</v-snackbar>
 </template>
+
+<style scoped>
+#icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>

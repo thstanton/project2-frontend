@@ -15,6 +15,21 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { VDatePicker } from 'vuetify/labs/VDatePicker'
 
+const gigManagerTheme = {
+  dark: false,
+  colors: {
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
+    primary: '#3F51B5',
+    secondary: '#304FFE',
+    error: '#EC407A',
+    info: '#283593',
+    success: '#4CAF50',
+    warning: '#FF9800',
+  },
+}
+
+
 const vuetify = createVuetify({
   components: {
     ...components, 
@@ -23,6 +38,33 @@ const vuetify = createVuetify({
   directives,
   icons: {
     defaultSet: 'mdi'
+  },
+  theme: {
+    defaultTheme: 'gigManagerTheme',
+    themes: {
+      gigManagerTheme,
+    }
+  },
+  defaults: {
+    VTextField: {
+      variant: 'underlined',
+    },
+    Vbtn: {
+      color: 'primary',
+      variant: 'flat'
+    },
+    VAutocomplete: {
+      variant: 'underlined'
+    },
+    VCombobox: {
+      variant: 'underlined'
+    },
+    VTextarea: {
+      variant: 'underlined'
+    },
+    VCard: {
+      variant: 'elevated'
+    }
   }
 })
 
