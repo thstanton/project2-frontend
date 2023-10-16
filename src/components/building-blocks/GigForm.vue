@@ -15,7 +15,21 @@ export default {
         VenueForm
     },
     data: () => ({
-        gig: {},
+        gig: {
+            date: '',
+            startTime: '',
+            endTime: '',
+            agencyName: '',
+            venueName: '',
+            gigType: '',
+            lineUp: '',
+            gigSets: [],
+            notes: '',
+            fee: '',
+            status: '',
+            genres: [],
+            requests: []
+        },
         newVenue: {},
         newAgency: {},
         newSet: {
