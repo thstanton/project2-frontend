@@ -93,7 +93,6 @@ const router = createRouter({
 router.beforeEach((to) => {
     const { cookies } = useCookies()
     const isLoggedIn = cookies.isKey('user_session')
-    console.log(isLoggedIn)
     if (!isLoggedIn && to.name !== 'Landing Page') {
         return { name: 'Landing Page' }
     }
