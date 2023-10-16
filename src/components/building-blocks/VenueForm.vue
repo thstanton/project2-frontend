@@ -22,7 +22,7 @@ export default {
         }
     },
     methods: {
-        addvenue: async function () {
+        addVenue: async function () {
             try {
                 // Post new agency to DB
                 const response = await fetch(API_SAVEVENUE_URL, {
