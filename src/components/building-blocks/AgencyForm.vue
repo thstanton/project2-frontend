@@ -6,7 +6,8 @@ export default {
     props: ['agencyId'],
     emits: ['closeDialog', 'agencyAdd', 'agencyUpdate'],
     data: () => ({
-        agency: {}
+        agency: {},
+        dataReady: false
     }),
     async mounted() {
         if (this.agencyId) {
@@ -14,6 +15,7 @@ export default {
                 const response = await fetch(`${API_AGENCY_URL}/${this.agencyId}`)
                 let data = await response.json()
                 this.agency = data
+                this.dataReady = true
             } catch (err) {
                 console.error(err)
             }
@@ -67,7 +69,7 @@ export default {
 </script>
 
 <template>
-    <v-card>
+    <v-card v-if="agencyId && dataReady || !agencyId">
         <v-card-title v-if="agencyId">Edit agency</v-card-title>
         <v-card-title v-else>Create agency</v-card-title>
         <v-list>
