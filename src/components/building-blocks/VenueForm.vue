@@ -8,7 +8,8 @@ export default {
     props: ['venueId'],
     emits: ['closeDialog', 'venueAdd', 'venueUpdate'],
     data: () => ({
-        venue: {}
+        venue: {},
+        dataReady: false
     }),
     async mounted() {
         if (this.venueId) {
@@ -16,6 +17,7 @@ export default {
                 const response = await fetch(`${API_SINGLEVENUE_URL}/${this.venueId}`)
                 let data = await response.json()
                 this.venue = data.venue
+                this.dataReady = true
             } catch (err) {
                 console.error(err)
             }
@@ -69,7 +71,7 @@ export default {
 </script>
 
 <template>
-    <v-card min-width="300">
+    <v-card min-width="300" v-if="venueId && dataReady || !venueId">
         <v-card-title v-if="venueId">Edit venue</v-card-title>
         <v-card-title v-else>Add new venue</v-card-title>
         <v-list>
