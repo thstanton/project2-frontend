@@ -14,7 +14,7 @@ export default {
         <v-card-text>
             <v-row>
                 <v-col class="v-col-auto">
-                    <v-avatar color="red">
+                    <v-avatar>
                         <span class="text-h5">{{ agency.initials }}</span>
                     </v-avatar>
                 </v-col>

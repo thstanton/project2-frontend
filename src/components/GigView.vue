@@ -33,12 +33,6 @@ export default {
             genres: [],
             requests: []
         },
-        alert: {
-            message: '',
-            display: false,
-            timeout: 3000,
-            color: 'primary'
-        },
         dataLoaded: false,
         deleteDialog: false,
     }),
@@ -88,7 +82,9 @@ export default {
                         </v-col>
 
                         <v-col class="v-col-2" id="icon">
-                            <v-icon :icon="renderIcon(gig.gigType)" size="8vmin" />
+                            <div id="icon">
+                                <v-icon :icon="renderIcon(gig.gigType)" size="8vmin" color="#C5CAE9" />
+                            </div>
                         </v-col>
                         
                     </v-row>
@@ -116,7 +112,7 @@ export default {
                             
                             <v-list-item title="Sets:"></v-list-item>
                             <v-timeline density="compact">
-                                <v-timeline-item v-for="(set, i) in gig.gigSets" :key="i" size="x-small" dot-color="indigo">{{ set.length }} minutes</v-timeline-item>
+                                <v-timeline-item v-for="(set, i) in gig.gigSets" :key="i" size="x-small" dot-color="indigo">{{ set.length }} minutes - {{ set.desc }}</v-timeline-item>
                             </v-timeline>
                             <v-divider></v-divider>
                             
@@ -173,7 +169,7 @@ export default {
                             <v-chip v-for="genre in gig.genres" :key="genre">{{ genre }}</v-chip>
                             
                             <v-list-item title="Requests:"></v-list-item>
-                            <v-list-item v-for="piece in gig.requests" :key="piece" prepend-icon="mdi-piano">{{ piece.name }}</v-list-item>
+                            <v-list-item v-for="piece in gig.requests" :key="piece" prepend-icon="mdi-piano">{{ piece.name }} - {{ piece.desc }}</v-list-item>
 
                         </v-list>
                     </v-card-text>
@@ -190,17 +186,10 @@ export default {
         v-if="dataLoaded"
         :gigId="gig._id" 
     />
-
-    <!-- ? Alerts -->
-    <v-snackbar 
-            v-model="alert.display" 
-            :timeout="alert.timeout"
-            :color="alert.color"
-        >{{ alert.message }}</v-snackbar>
 </template>
 
 <style scoped>
-#icons {
+#icon {
     display: flex;
     align-items: center;
     justify-content: center;

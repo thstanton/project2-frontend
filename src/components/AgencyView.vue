@@ -58,7 +58,7 @@ export default {
             <v-col class="v-col-8">
                 <v-card>
                     <template v-slot:prepend>
-                        <v-avatar color="red">
+                        <v-avatar>
                             <span class="text-h5">{{ agency.initials }}</span>
                         </v-avatar>
                     </template>
@@ -91,11 +91,12 @@ export default {
                 </v-row>
             </v-col>
         </v-row>
+        
         <!-- ? Gigs -->
-    <GigGrid 
-        v-if="dataLoaded" 
-        :gigs="gigs" 
-    />
+        <GigGrid 
+            v-if="dataLoaded" 
+            :gigs="gigs" 
+        />
     </v-container>
 
     <!-- ? Edit Menu -->

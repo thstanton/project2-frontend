@@ -64,6 +64,9 @@ const vuetify = createVuetify({
     },
     VCard: {
       variant: 'elevated'
+    },
+    VAvatar: {
+      color: 'secondary'
     }
   }
 })

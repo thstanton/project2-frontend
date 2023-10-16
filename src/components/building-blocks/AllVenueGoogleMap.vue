@@ -43,7 +43,7 @@ export default {
             <v-card-title>Venues</v-card-title>
             <GoogleMap 
                 :api-key="apiKey" 
-                style="width: 100%; height: 500px" 
+                style="width: 100%; height: 600px" 
                 :center="center" 
                 :zoom="5"
                 >
