@@ -38,7 +38,7 @@ export default {
 <template>
     <BreadCrumbs />
     <v-container>
-        <h1 class="text-h4">Upcoming Gigs</h1>
+        <h1 class="text-h4">All Gigs</h1>
         <GigGrid v-if="dataReady" :gigs="gigs" />
     </v-container>
 </template>
