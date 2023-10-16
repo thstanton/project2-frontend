@@ -5,7 +5,7 @@ import EditMenu from './building-blocks/EditMenu.vue'
 import { formatDate } from '@/methods/formatDate'
 import VenueGoogleMap from './building-blocks/VenueGoogleMap.vue'
 
-const API_VENUES_URL = "http://localhost:4000/venues"
+const API_VENUES_URL = `${process.env.VUE_APP_BACKEND_API}/venues`
 
 export default {
     name: 'VenueView',
@@ -69,7 +69,7 @@ export default {
                 <VenueGoogleMap :center="locationData" />
             </v-col>
         </v-row>
-        
+
         <!-- ? Gig Grid -->
         <GigGrid 
             v-if="dataLoaded" 

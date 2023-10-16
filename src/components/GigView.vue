@@ -6,7 +6,7 @@ import EditMenu from './building-blocks/EditMenu.vue'
 import { renderIcon } from '@/methods/renderIcon'
 import moment from 'moment'
 
-const API_SINGLEGIG_URL = 'http://localhost:4000/gigs'
+const API_SINGLEGIG_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
 export default {
     name: 'GigView',

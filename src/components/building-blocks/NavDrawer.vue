@@ -1,7 +1,7 @@
 <script>
 import { decodeCredential, googleLogout } from 'vue3-google-login'
 
-const API_URL = 'http://localhost:4000/users'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/users`
 
 export default {
     name: 'NavDrawer',

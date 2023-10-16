@@ -3,7 +3,7 @@ import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import { formatDate } from '@/methods/formatDate'
 
-const API_URL = 'http://localhost:4000/gigs'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
 export default {
     name: 'UpcomingGigs',

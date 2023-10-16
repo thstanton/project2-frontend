@@ -2,9 +2,9 @@
 import AgencyForm from './AgencyForm.vue'
 import VenueForm from './VenueForm.vue'
 
-const API_AGENCYDELETE_URL = "http://localhost:4000/agencies/delete"
-const API_VENUEDELETE_URL = "http://localhost:4000/venues/delete"
-const API_GIGDELETE_URL = "http://localhost:4000/gigs/delete"
+const API_AGENCYDELETE_URL = `${process.env.VUE_APP_BACKEND_API}/agencies/delete`
+const API_VENUEDELETE_URL = `${process.env.VUE_APP_BACKEND_API}/venues/delete`
+const API_GIGDELETE_URL = `${process.env.VUE_APP_BACKEND_API}/gigs/delete`
 
 export default {
     name: 'EditMenu',

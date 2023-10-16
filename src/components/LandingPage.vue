@@ -10,13 +10,14 @@ export default {
 <template>
     <v-container>
         <v-row>
-            <v-col class="v-col-2"></v-col>
-            <v-col class="v-col-8">
+            <v-col class="v-col-4"></v-col>
+            <v-col class="v-col-4">
                 <v-img
                     :src="require('../assets/splash-screen.png')"
+                    max-width="600px"
                 ></v-img>
             </v-col>
-            <v-col class="v-col-2"></v-col>
+            <v-col class="v-col-4"></v-col>
         </v-row>
         <v-row>
             <v-col class="v-col-2"></v-col>

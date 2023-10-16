@@ -4,7 +4,7 @@ import Chart from 'chart.js/auto'
 
 Chart.register()
 
-const API_URL = 'http://localhost:4000/gigs/stats/agencies'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/gigs/stats/agencies`
 
 export default {
     name: 'AgencyChart',

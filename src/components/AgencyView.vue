@@ -4,7 +4,7 @@ import GigGrid from './building-blocks/GigGrid.vue'
 import EditMenu from './building-blocks/EditMenu.vue'
 import { formatDate } from '@/methods/formatDate'
 
-const API_AGENCIES_URL = "http://localhost:4000/agencies"
+const API_AGENCIES_URL = `${process.env.VUE_APP_BACKEND_API}/agencies`
 
 export default {
     name: 'AgencyView',

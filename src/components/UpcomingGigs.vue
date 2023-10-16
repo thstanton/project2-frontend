@@ -3,7 +3,7 @@ import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import { formatDate } from '@/methods/formatDate'
 
-const API_URL = 'http://localhost:4000/gigs'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
 export default {
     name: 'UpcomingGigs',
@@ -25,15 +25,9 @@ export default {
             
             if (response) {
                 let data = await response.json()
-                // const buckets = [this.thisWeek, this.nextWeek, this.thisMonth, this.thisYear]
-                // for (let i = 0; i < data.length; i++) {
-                //     console.log(buckets[i], data[i].gigs)
-                //     buckets[i] = data[i].gigs
-                // }
                 if (data[0].gigs) this.thisWeek = data[0].gigs
                 if (data[1].gigs) this.nextWeek = data[1].gigs
                 if (data[2].gigs) this.thisMonth = data[2].gigs
-                // if (data[3].gigs) this.thisYear = data[3].gigs
                 this.dataReady = true
 
                 // Format Dates
@@ -62,8 +56,6 @@ export default {
             <GigGrid :gigs="nextWeek" />
             <h2 class="text-h6">This month</h2>
             <GigGrid :gigs="thisMonth" />
-            <h2 class="text-h6">This year</h2>
-            <GigGrid :gigs="thisYear" />
         </div>
     </v-container>
 </template>

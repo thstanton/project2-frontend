@@ -1,7 +1,7 @@
 <script>
 import BreadCrumbs from './building-blocks/BreadCrumbs'
 
-const API_URL = 'http://localhost:4000/agencies'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/agencies`
 
 export default {
     name: 'AllAgencies',

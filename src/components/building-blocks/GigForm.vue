@@ -5,7 +5,7 @@ import VenueForm from './VenueForm.vue'
 import moment from 'moment'
 
 // ? API Links
-const API_GIGS_URL = 'http://localhost:4000/gigs'
+const API_GIGS_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
 export default {
     name: 'GigView',

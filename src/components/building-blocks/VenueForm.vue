@@ -1,7 +1,7 @@
 <script>
-const API_SAVEVENUE_URL = 'http://localhost:4000/venues/new'
-const API_UPDATEVENUE_URL = 'http://localhost:4000/venues/update'
-const API_SINGLEVENUE_URL = 'http://localhost:4000/venues'
+const API_SAVEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues/new`
+const API_UPDATEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues/update`
+const API_SINGLEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues`
 
 export default {
     name: 'VenueForm',

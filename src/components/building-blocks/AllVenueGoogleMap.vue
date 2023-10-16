@@ -1,7 +1,7 @@
 <script>
 import { GoogleMap, Marker } from "vue3-google-map"
 
-const API_URL = 'http://localhost:4000/venues/locations'
+const API_URL = `${process.env.VUE_APP_BACKEND_API}/venues/locations`
   
 export default {
     name: 'AllVenueGoogleMap',

@@ -1,5 +1,5 @@
 <script>
-const API_AGENCY_URL = 'http://localhost:4000/agencies'
+const API_AGENCY_URL = `${process.env.VUE_APP_BACKEND_API}/agencies`
 
 export default {
     name: 'AgencyForm',
