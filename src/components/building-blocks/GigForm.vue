@@ -18,8 +18,14 @@ export default {
         gig: {},
         newVenue: {},
         newAgency: {},
-        newSet: {},
-        newRequest: {},
+        newSet: {
+            length: '',
+            desc: ''
+        },
+        newRequest: {
+            piece: '',
+            desc: ''
+        },
         allAgencies: [],
         allVenues: [],
         allGenres: ['Jazz', 'Pop', 'Classical', 'Blues'],
@@ -69,12 +75,18 @@ export default {
     methods: {
         createSet: function () {
             this.gig.gigSets.push(this.newSet)
-            this.newSet = {}
+            this.newSet = {
+                length: '',
+                desc: ''
+            }
             this.menus.set = false
         },
         createRequest: function () {
             this.gig.requests.push(this.newRequest)
-            this.newRequest = {}
+            this.newRequest = {
+                piece: '',
+                desc: ''
+            }
             this.menus.request = false
         },
         updateGig: async function () {
