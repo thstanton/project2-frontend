@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import NavDrawer from './components/building-blocks/NavDrawer'
+import NavDrawer from './components/building-blocks/NavDrawer.vue'
 
 export default {
   name: 'App',

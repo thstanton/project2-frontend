@@ -1,7 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import { useCookies } from "vue3-cookies"
-// import Vue from 'vue'
-// import { app } from '../main'
 import LandingPage from '../components/LandingPage'
 import GigView from '../components/GigView'
 import NewGig from '../components/NewGig'
@@ -19,69 +17,74 @@ const routes = [
     {
         name: 'Landing Page',
         path: '/',
-        component: LandingPage
+        component: LandingPage,
+        meta: { title: 'Gig Manager - Welcome' }
     },
     {
         name: 'Dashboard',
         path: '/dashboard',
         component: DashBoard,
-        // beforeEnter: (to, from, next) => {
-        //     if(Vue.cookie.get('user-session')) {
-        //       next('/dashboard');
-        //     } else {
-        //       next();
-        //     }
-        // }
+        meta: { title: 'Gig Manager - Dashboard' }
     },
     {
         name: 'All Gigs',
         path: '/gigs',
-        component: AllGigs
+        component: AllGigs,
+        meta: { title: 'Gig Manager - All Gigs' }
     },
     {
         name: 'Create Gig',
         path: '/gigs/create',
-        component: NewGig
+        component: NewGig,
+        meta: { title: 'Gig Manager - Create Gig' }
     },
     {
         name: 'Upcoming Gigs',
         path: '/gigs/upcoming',
-        component: UpcomingGigs
+        component: UpcomingGigs,
+        meta: { title: 'Gig Manager - Upcoming Gigs' }
     },
     {
         name: 'Agencies',
         path: '/agencies',
-        component: AllAgencies
+        component: AllAgencies,
+        meta: { title: 'Gig Manager - Agencies' }
     },
     {
         name: 'Venues',
         path: '/venues',
-        component: AllVenues
+        component: AllVenues,
+        meta: { title: 'Gig Manager - Venues' }
     },
     {
         name: 'Unconfirmed Gigs',
         path: '/gigs/unconfirmed',
-        component: UnconfirmedGigs
+        component: UnconfirmedGigs,
+        meta: { title: 'Gig Manager - Unconfirmed Gigs' }
     },
     {
         name: 'Update Gig',
         path: '/gigs/update/:id',
-        component: UpdateGig
+        component: UpdateGig,
+        meta: { title: 'Gig Manager - Update Gig' }
     },
     {
         name: 'Single Gig',
         path: '/gigs/:id',
-        component: GigView
+        component: GigView,
+        meta: { title: 'Gig Manager - View Gig' }
     },
     {
         name: 'Single Agency',
         path: '/agencies/:id',
-        component: AgencyView
+        component: AgencyView,
+        meta: { title: 'Gig Manager - View Agency' }
     },
     {
         name: 'Single Venue',
         path: '/venues/:id',
-        component: VenueView
+        component: VenueView,
+        meta: { title: 'Gig Manager - View Venue' }
     }
 ]
 
@@ -97,14 +100,5 @@ router.beforeEach((to) => {
         return { name: 'Landing Page' }
     }
 })
-
-// function beforeEnter(to) {
-//     const { cookies } = useCookies()
-//     const isLoggedIn = cookies.isKey('user-session')
-//     console.log(isLoggedIn)
-//     if (isLoggedIn && to.name !== 'Landing Page') {
-//         return { name: 'Landing Page' }
-//     }
-// }
 
 export default router
