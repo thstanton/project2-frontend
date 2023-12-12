@@ -23,6 +23,7 @@ This project was completed solo, in 1 week.
 ## Technologies Used
 
 * Vue.js
+* Vue Router
 * MongoDB
 * Mongoose
 * Express.js
@@ -150,7 +151,7 @@ I wanted to display these in a grid format, with cards to separate out the conte
 
 Once the single gig view was set up, I then moved onto creating the form for users to create a new gig. One of the most challenging parts of this was working out how to manage the parts of the model which were made up of subdocuments, such as the sets.
 
-My solution was for the user to create a new set, with a separate newSet property in the v-model:
+My solution was for the user to create a new set, with a separate ``newSet`` property in the v-model:
 
 ```js
 newSet: {
@@ -160,7 +161,7 @@ newSet: {
 ```
 
 
-Then, once the details were added, a createSet function would push this object into the gigSets array in the gig model.
+Then, once the details were added, a ``createSet`` function would push this object into the ``gigSets`` array in the gig model.
 
 ```js
        createSet: function () {
@@ -173,7 +174,7 @@ Then, once the details were added, a createSet function would push this object i
        },
 ```
 
-I also needed the user to be able to modify the sets if they made a mistake, so underneath the create set form components, I used the v-for directive to list the sets in the array, each with a delete button, which splices them from the array.
+I also needed the user to be able to modify the sets if they made a mistake, so underneath the create set form components, I used the ``v-for`` directive to list the sets in the array, each with a delete button, which splices them from the array.
 
 ```js
 <!-- ? Display created sets -->
@@ -189,7 +190,7 @@ I also needed the user to be able to modify the sets if they made a mistake, so 
 ```
 
 
-Once the form was completed, I hooked this up to the POST endpoint in the back end and ensured it was working so that gigs could be created and changed the single gig view to fetch a gig and render it dynamically.
+Once the form was completed, I hooked this up to the ``POST`` endpoint in the back end and ensured it was working so that gigs could be created and changed the single gig view to fetch a gig and render it dynamically.
 
 At this point I ran into a fairly major issue with displaying dates - detailed in the challenges section below.
 
@@ -214,7 +215,7 @@ async function filterAgency(req, res) {
 }
 ```
 
-While I was completing these processes, I realised that I was repeating quite a lot of code - as the cards and the grids to display the cards were the same on each of these pages. So far, I had only used components as the pages, rather than separate parts of the page. To try to make the process of creating these pages more efficient, I decided that I would try to create the grid as a reusable component, passing in props to tell it which gigs to display. My initial version of the GigGrid component performed the fetch within the component, using conditionals to determine which data to fetch based on the props passed in:
+While I was completing these processes, I realised that I was repeating quite a lot of code - as the cards and the grids to display the cards were the same on each of these pages. So far, I had only used components as the pages, rather than separate parts of the page. To try to make the process of creating these pages more efficient, I decided that I would try to create the grid as a reusable component, passing in props to tell it which gigs to display. My initial version of the ``GigGrid`` component performed the fetch within the component, using conditionals to determine which data to fetch based on the props passed in:
 
 ```js
 name: 'GigGrid',
@@ -273,7 +274,7 @@ I still had issues with some of my pages, however. On the single agency and sing
 <GigGrid v-if="dataLoaded === true" :agencyId="agency._id" />
 ```
 
-Here, the page was fetching the agency data, then passing the agencyId into the GigGrid - which in turn was fetching the filtered gig data. Without the dataLoaded flag, the data was not being fetched quickly enough to display the gig data without errors. With the flag, the gig data was only loading _after_ the agency data had already been fetched - which was slow.
+Here, the page was fetching the agency data, then passing the ``agencyId`` into the ``GigGrid`` - which in turn was fetching the filtered gig data. Without the dataLoaded flag, the data was not being fetched quickly enough to display the gig data without errors. With the flag, the gig data was only loading _after_ the agency data had already been fetched - which was slow.
 
 I decided that from this point on, only page-level components would fetch data to alleviate this ‘waterfall’ effect. I refactored my back end endpoints, to ensure that only one fetch would be needed to get all the data for that page. For example, the single agency controller would now get the agency data _and_ all gigs associated with that agency:
 
@@ -321,7 +322,7 @@ async function getUpcoming(req, res) {
        const newYear = new Date(today.valueOf() + (80 * oneDay))
 ```
 
-I was then able to use the $bucket stage of aggregate to sort the gigs into the date ranges required:
+I was then able to use the ``$bucket`` stage of aggregate to sort the gigs into the date ranges required:
 
 ```js
  // Get gigs gte to today, then put them in buckets
@@ -373,7 +374,7 @@ async function getOne(req, res) {
 }
 ```
 
-The ChartJS implementation also proved relatively straightforward, requiring a modification to the getAgencyStats function which organised the data into an object that matched the format required by ChartJS:
+The ChartJS implementation also proved relatively straightforward, requiring a modification to the ``getAgencyStats`` function which organised the data into an object that matched the format required by ChartJS:
 
 ```js
 async function getAgencyStats(req, res) {
@@ -453,7 +454,7 @@ Possibly the greatest challenge of this project was handling dates. I initially 
 
 **Data loading**
 
-Being relatively new to full stack development, the other biggest challenge was the errors that were caused when Vue tried to render elements that depended on data which had not yet been fetched. I used a lot of conditional rendering with the v-if directive, and also created dataLoaded booleans as flags, to try to ensure that rendering was not attempted until the data was there.
+Being relatively new to full stack development, the other biggest challenge was the errors that were caused when Vue tried to render elements that depended on data which had not yet been fetched. I used a lot of conditional rendering with the ``v-if`` directive, and also created dataLoaded booleans as flags, to try to ensure that rendering was not attempted until the data was there.
 
 
 ```js
@@ -512,7 +513,7 @@ This idea of modularity also featured in my back end. Once I had got used to hav
 
 **Async/Await**
 
-I became much more confident with using async/await, working with promises and asynchronous code during this project.
+I became much more confident with using ``async``/``await``, working with promises and asynchronous code during this project.
 
 ## Bugs
 
