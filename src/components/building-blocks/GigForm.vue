@@ -1,8 +1,10 @@
 <script>
 // ? Imports
+import getUser from '@/methods/getUser'
 import AgencyForm from './AgencyForm.vue'
 import VenueForm from './VenueForm.vue'
 import moment from 'moment'
+import getJwt from '@/methods/getUser'
 
 // ? API Links
 const API_GIGS_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
@@ -61,7 +63,13 @@ export default {
             if (this.gigId) {
                 response = await fetch(`${API_GIGS_URL}/populate-form/${this.gigId}`)
             } else {
-                response = await fetch(`${API_GIGS_URL}/populate-form`)
+                response = await fetch(`${API_GIGS_URL}/populate-form`, {
+                    method: 'GET',
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer: ${getJwt()}` 
+                    },
+                })
             }
             
             if (!response.ok) {
@@ -136,7 +144,7 @@ export default {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(this.gig)
+                    body: JSON.stringify({gig: this.gig, user: getUser()})
                 })
                 // Check if successful
                 if (response.status === 201) {

@@ -1,4 +1,6 @@
 <script>
+import getJwt from '@/methods/getUser'
+
 const API_SAVEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues/new`
 const API_UPDATEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues/update`
 const API_SINGLEVENUE_URL = `${process.env.VUE_APP_BACKEND_API}/venues`
@@ -32,7 +34,7 @@ export default {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(this.venue)
+                    body: JSON.stringify({venue: this.venue, user: getJwt()})
                 })
 
                 // Check if successful

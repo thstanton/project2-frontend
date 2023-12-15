@@ -1,6 +1,7 @@
 <script>
 import { Pie } from 'vue-chartjs'
 import Chart from 'chart.js/auto'
+import getJwt from '@/methods/getUser'
 
 Chart.register()
 
@@ -24,7 +25,13 @@ export default {
     }),
     async mounted() {
         try {
-            let response = await fetch(API_URL)
+            let response = await fetch(API_URL, {
+            method: 'GET',
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer: ${getJwt()}` 
+            },
+        })
             
             if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);

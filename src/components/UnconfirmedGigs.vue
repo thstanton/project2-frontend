@@ -2,6 +2,7 @@
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import { formatDate } from '@/methods/formatDate'
+import getJwt from '@/methods/getUser'
 
 const API_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
@@ -16,7 +17,13 @@ export default {
     }),
     async mounted() {
         try {
-            const response = await fetch(`${API_URL}/status/unconfirmed`)
+            const response = await fetch(`${API_URL}/status/unconfirmed`, {
+            method: 'GET',
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer: ${getJwt()}` 
+            },
+        })
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
             

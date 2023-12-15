@@ -34,7 +34,6 @@ export default {
             console.log(data)
             this.venue = data.venue
             this.gigs = data.gigs
-            this.locationData = data.locationData
             this.dataLoaded = true
 
             // Format Date
@@ -66,7 +65,7 @@ export default {
                 </v-card>
             </v-col>
             <v-col>
-                <VenueGoogleMap :center="locationData" />
+                <VenueGoogleMap :center="venue.geoData" />
             </v-col>
         </v-row>
 

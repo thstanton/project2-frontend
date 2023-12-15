@@ -2,6 +2,7 @@
 import BreadCrumbs from './building-blocks/BreadCrumbs.vue'
 import GigGrid from './building-blocks/GigGrid.vue'
 import { formatDate } from '@/methods/formatDate'
+import getJwt from '@/methods/getUser'
 
 const API_URL = `${process.env.VUE_APP_BACKEND_API}/gigs`
 
@@ -19,15 +20,22 @@ export default {
     }),
     async mounted() {
         try {
-            const response = await fetch(`${API_URL}/upcoming`)
+            const response = await fetch(`${API_URL}/upcoming`, {
+            method: 'GET',
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer: ${getJwt()}` 
+            },
+        })
 
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
             
             if (response) {
                 let data = await response.json()
-                if (data[0].gigs) this.thisWeek = data[0].gigs
-                if (data[1].gigs) this.nextWeek = data[1].gigs
-                if (data[2].gigs) this.thisMonth = data[2].gigs
+                console.log(data)
+                if (data.length >= 1) this.thisWeek = data[0].gigs
+                if (data.length >= 2) this.nextWeek = data[1].gigs
+                if (data.length >= 3) this.thisMonth = data[2].gigs
                 this.dataReady = true
 
                 // Format Dates
@@ -51,11 +59,14 @@ export default {
         <h1 class="text-h4">Upcoming Gigs</h1>
         <div v-if="dataReady">
             <h2 class="text-h6">This week</h2>
-            <GigGrid :gigs="thisWeek" />
+            <GigGrid v-if="thisWeek.length" :gigs="thisWeek" />
+            <p v-else>No gigs this week</p>
             <h2 class="text-h6">Next week</h2>
-            <GigGrid :gigs="nextWeek" />
+            <GigGrid v-if="nextWeek.length" :gigs="nextWeek" />
+            <p v-else>No gigs next week</p>
             <h2 class="text-h6">This month</h2>
-            <GigGrid :gigs="thisMonth" />
+            <GigGrid v-if="thisMonth.length" :gigs="thisMonth" />
+            <p v-else>No gigs for the rest of the month</p>
         </div>
     </v-container>
 </template>

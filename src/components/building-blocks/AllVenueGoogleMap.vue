@@ -1,5 +1,6 @@
 <script>
 import { GoogleMap, Marker } from "vue3-google-map"
+import getJwt from "@/methods/getUser"
 
 const API_URL = `${process.env.VUE_APP_BACKEND_API}/venues/locations`
   
@@ -20,7 +21,13 @@ export default {
     }),
     async mounted() {
         try {
-            const response = await fetch(API_URL)
+            const response = await fetch(API_URL, {
+            method: 'GET',
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer: ${getJwt()}` 
+            },
+        })
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

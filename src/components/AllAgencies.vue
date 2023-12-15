@@ -1,5 +1,6 @@
 <script>
 import BreadCrumbs from './building-blocks/BreadCrumbs'
+import getJwt from '@/methods/getUser'
 
 const API_URL = `${process.env.VUE_APP_BACKEND_API}/agencies`
 
@@ -12,7 +13,13 @@ export default {
         agencies: []
     }),
     async mounted() {
-        const response = await fetch(API_URL)
+        const response = await fetch(API_URL, {
+            method: 'GET',
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer: ${getJwt()}` 
+            },
+        })
         let data = await response.json()
         this.agencies = data
     }

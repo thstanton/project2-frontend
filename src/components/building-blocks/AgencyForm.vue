@@ -1,4 +1,5 @@
 <script>
+import getJwt from '@/methods/getUser'
 const API_AGENCY_URL = `${process.env.VUE_APP_BACKEND_API}/agencies`
 
 export default {
@@ -30,7 +31,7 @@ export default {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(this.agency)
+                    body: JSON.stringify({agency: this.agency, user: getJwt()})
                 })
 
                 // Check if successful
