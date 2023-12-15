@@ -18,73 +18,73 @@ const routes = [
         name: 'Landing Page',
         path: '/',
         component: LandingPage,
-        meta: { title: 'Gig Manager - Welcome' }
+        meta: { title: 'Gig Manager | Welcome' }
     },
     {
         name: 'Dashboard',
         path: '/dashboard',
         component: DashBoard,
-        meta: { title: 'Gig Manager - Dashboard' }
+        meta: { title: 'Gig Manager | Dashboard' }
     },
     {
         name: 'All Gigs',
         path: '/gigs',
         component: AllGigs,
-        meta: { title: 'Gig Manager - All Gigs' }
+        meta: { title: 'Gig Manager | All Gigs' }
     },
     {
         name: 'Create Gig',
         path: '/gigs/create',
         component: NewGig,
-        meta: { title: 'Gig Manager - Create Gig' }
+        meta: { title: 'Gig Manager | Create Gig' }
     },
     {
         name: 'Upcoming Gigs',
         path: '/gigs/upcoming',
         component: UpcomingGigs,
-        meta: { title: 'Gig Manager - Upcoming Gigs' }
+        meta: { title: 'Gig Manager | Upcoming Gigs' }
     },
     {
         name: 'Agencies',
         path: '/agencies',
         component: AllAgencies,
-        meta: { title: 'Gig Manager - Agencies' }
+        meta: { title: 'Gig Manager | Agencies' }
     },
     {
         name: 'Venues',
         path: '/venues',
         component: AllVenues,
-        meta: { title: 'Gig Manager - Venues' }
+        meta: { title: 'Gig Manager | Venues' }
     },
     {
         name: 'Unconfirmed Gigs',
         path: '/gigs/unconfirmed',
         component: UnconfirmedGigs,
-        meta: { title: 'Gig Manager - Unconfirmed Gigs' }
+        meta: { title: 'Gig Manager | Unconfirmed Gigs' }
     },
     {
         name: 'Update Gig',
         path: '/gigs/update/:id',
         component: UpdateGig,
-        meta: { title: 'Gig Manager - Update Gig' }
+        meta: { title: 'Gig Manager | Update Gig' }
     },
     {
         name: 'Single Gig',
         path: '/gigs/:id',
         component: GigView,
-        meta: { title: 'Gig Manager - View Gig' }
+        meta: { title: 'Gig Manager | View Gig' }
     },
     {
         name: 'Single Agency',
         path: '/agencies/:id',
         component: AgencyView,
-        meta: { title: 'Gig Manager - View Agency' }
+        meta: { title: 'Gig Manager | View Agency' }
     },
     {
         name: 'Single Venue',
         path: '/venues/:id',
         component: VenueView,
-        meta: { title: 'Gig Manager - View Venue' }
+        meta: { title: 'Gig Manager | View Venue' }
     }
 ]
 
@@ -93,12 +93,15 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to, from, next) => {
+    const title = to.meta.title
     const { cookies } = useCookies()
     const isLoggedIn = cookies.isKey('user_session')
     if (!isLoggedIn && to.name !== 'Landing Page') {
         return { name: 'Landing Page' }
     }
+    if (title) document.title = title
+    next()
 })
 
 export default router
