@@ -1,6 +1,5 @@
 <script>
 // ? Imports
-import getUser from '@/methods/getUser'
 import AgencyForm from './AgencyForm.vue'
 import VenueForm from './VenueForm.vue'
 import moment from 'moment'
@@ -142,9 +141,10 @@ export default {
                 const response = await fetch(`${API_GIGS_URL}/new`, {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer: ${getJwt()}` 
                     },
-                    body: JSON.stringify({gig: this.gig, user: getUser()})
+                    body: JSON.stringify({gig: this.gig})
                 })
                 // Check if successful
                 if (response.status === 201) {

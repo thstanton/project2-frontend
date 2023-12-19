@@ -7,7 +7,10 @@ export default {
     props: ['agencyId'],
     emits: ['closeDialog', 'agencyAdd', 'agencyUpdate'],
     data: () => ({
-        agency: {},
+        agency: {
+            name: '',
+            email: ''
+        },
         dataReady: false
     }),
     async mounted() {
@@ -25,13 +28,15 @@ export default {
     methods: {
         addAgency: async function () {
             try {
+                console.log(getJwt())
                 // Post new agency to DB
                 const response = await fetch(`${API_AGENCY_URL}/new`, {
                     method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer: ${getJwt()}` 
                     },
-                    body: JSON.stringify({agency: this.agency, user: getJwt()})
+                    body: JSON.stringify({agency: this.agency})
                 })
 
                 // Check if successful

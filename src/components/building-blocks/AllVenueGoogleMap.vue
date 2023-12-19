@@ -16,7 +16,7 @@ export default {
             lat: 54.26413345336914,
             lng: -3.985777735710144
         },
-        markers: [],
+        venues: [],
         dataReady: false
     }),
     async mounted() {
@@ -35,7 +35,7 @@ export default {
 
             if (response) {
                 const data = await response.json()
-                this.markers = data
+                this.venues = data
                 this.dataReady = true
             }
         } catch (err) {
@@ -54,7 +54,7 @@ export default {
                 :center="center" 
                 :zoom="5"
                 >
-                <Marker v-for="(marker, idx) of markers" :key="idx" :options="{ position: marker }" />
+                <Marker v-for="(venue, idx) of venues" :key="idx" :options="{ position: venue.geoData }" />
             </GoogleMap>
         </v-card>
 </template>

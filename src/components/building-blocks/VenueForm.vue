@@ -32,9 +32,10 @@ export default {
                 const response = await fetch(API_SAVEVENUE_URL, {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer: ${getJwt()}` 
                     },
-                    body: JSON.stringify({venue: this.venue, user: getJwt()})
+                    body: JSON.stringify({venue: this.venue})
                 })
 
                 // Check if successful

@@ -98,7 +98,7 @@ router.beforeEach((to, from, next) => {
     const { cookies } = useCookies()
     const isLoggedIn = cookies.isKey('user_session')
     if (!isLoggedIn && to.name !== 'Landing Page') {
-        return { name: 'Landing Page' }
+        return next({ name: 'Landing Page' })
     }
     if (title) document.title = title
     next()
