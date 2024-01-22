@@ -60,7 +60,13 @@ export default {
             let response
 
             if (this.gigId) {
-                response = await fetch(`${API_GIGS_URL}/populate-form/${this.gigId}`)
+                response = await fetch(`${API_GIGS_URL}/populate-form/${this.gigId}`, {
+                    method: 'GET',
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer: ${getJwt()}` 
+                    },
+                })
             } else {
                 response = await fetch(`${API_GIGS_URL}/populate-form`, {
                     method: 'GET',

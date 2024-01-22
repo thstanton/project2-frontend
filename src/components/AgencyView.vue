@@ -29,7 +29,6 @@ export default {
 
             if (agencyResponse) {
                 let data = await agencyResponse.json()
-                console.log(data)
                 this.agency = data.agency
                 this.stats = data.stats
                 this.gigs = data.gigs
