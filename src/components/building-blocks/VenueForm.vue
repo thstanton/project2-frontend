@@ -74,13 +74,13 @@ export default {
 </script>
 
 <template>
-    <v-card min-width="300" v-if="venueId && dataReady || !venueId">
+    <v-card min-width="300" v-if="venueId && dataReady || !venueId" style="width: 30rem;">
         <v-card-title v-if="venueId">Edit venue</v-card-title>
         <v-card-title v-else>Add new venue</v-card-title>
         <v-list>
-            <v-text-field label="Venue Name" v-model="venue.name"></v-text-field>
-            <v-text-field label="Venue Address" v-model="venue.address"></v-text-field>
-            <v-text-field label="Venue Postcode" v-model="venue.postcode"></v-text-field>
+            <v-text-field label="Venue Name" v-model="venue.name" class="px-6"></v-text-field>
+            <v-text-field label="Venue Address" v-model="venue.address" class="px-6"></v-text-field>
+            <v-text-field label="Venue Postcode" v-model="venue.postcode" class="px-6"></v-text-field>
         </v-list>
         <v-card-actions>
             <v-spacer></v-spacer>
