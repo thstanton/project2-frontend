@@ -1,87 +1,96 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import './assets/css/globalStyles.css'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import "./assets/css/globalStyles.css";
 
 //Auth
-import vue3GoogleLogin from 'vue3-google-login'
-import Vue3Cookies from "vue3-cookies"
+import vue3GoogleLogin from "vue3-google-login";
+import Vue3Cookies from "vue3-cookies";
 
 // Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
-import { VDatePicker } from 'vuetify/labs/VDatePicker'
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
+import "@mdi/font/css/materialdesignicons.css";
+import { VDatePicker } from "vuetify/labs/VDatePicker";
 
 const gigManagerTheme = {
   dark: false,
   colors: {
-    background: '#FFFFFF',
-    surface: '#FFFFFF',
-    primary: '#3F51B5',
-    secondary: '#304FFE',
-    error: '#EC407A',
-    info: '#283593',
-    success: '#4CAF50',
-    warning: '#FF9800',
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    primary: "#3F51B5",
+    secondary: "#304FFE",
+    error: "#EC407A",
+    info: "#283593",
+    success: "#4CAF50",
+    warning: "#FF9800",
   },
-}
-
+};
 
 const vuetify = createVuetify({
   components: {
-    ...components, 
-    VDatePicker
+    ...components,
+    VDatePicker,
   },
   directives,
   icons: {
-    defaultSet: 'mdi'
+    defaultSet: "mdi",
+  },
+  display: {
+    mobileBreakpoint: "sm",
+    thresholds: {
+      xs: 0,
+      sm: 340,
+      md: 540,
+      lg: 800,
+      xl: 1280,
+    },
   },
   theme: {
-    defaultTheme: 'gigManagerTheme',
+    defaultTheme: "gigManagerTheme",
     themes: {
       gigManagerTheme,
-    }
+    },
   },
   defaults: {
     VTextField: {
-      variant: 'underlined',
+      variant: "underlined",
     },
     Vbtn: {
-      color: 'primary',
-      variant: 'flat'
+      color: "primary",
+      variant: "flat",
     },
     VAutocomplete: {
-      variant: 'underlined'
+      variant: "underlined",
     },
     VCombobox: {
-      variant: 'underlined'
+      variant: "underlined",
     },
     VTextarea: {
-      variant: 'underlined'
+      variant: "underlined",
     },
     VCard: {
-      variant: 'elevated'
+      variant: "elevated",
     },
     VAvatar: {
-      color: 'secondary'
-    }
-  }
-})
+      color: "secondary",
+    },
+  },
+});
 
-const app = createApp(App)
-app.use(router)
-app.use(vuetify)
-app.use(vue3GoogleLogin, {clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID})
+const app = createApp(App);
+app.use(router);
+app.use(vuetify);
+app.use(vue3GoogleLogin, { clientId: process.env.VUE_APP_GOOGLE_CLIENT_ID });
 app.use(Vue3Cookies, {
-    expireTimes: "1d", // How long the cookie will remain in our system
-    path: '/', // Where the cookie will be saved (root)
-    domain: '',
-    secure: true, // Encrypted by default
-    sameSite: 'None'
-})
-app.mount('#app')
+  expireTimes: "1d", // How long the cookie will remain in our system
+  path: "/", // Where the cookie will be saved (root)
+  domain: "",
+  secure: true, // Encrypted by default
+  sameSite: "None",
+});
+app.mount("#app");
 
-export { app }
+export { app };
